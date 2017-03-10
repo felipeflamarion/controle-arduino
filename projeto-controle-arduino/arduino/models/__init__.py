@@ -1,6 +1,6 @@
-from django.contrib.auth.models import User
-from arduino.models.categoria import *
-from arduino.models.caixa import *
-from arduino.models.equipamento import *
-from arduino.models.utilizacao import *
-from arduino.models.comentario import *
+from django.contrib.auth.models import User as Usuario
+from categoria import Categoria
+from caixa import Caixa
+from equipamento import Equipamento
+from utilizacao import Utilizacao
+from comentario import Comentario

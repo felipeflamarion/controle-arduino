@@ -1,0 +1,11 @@
+<form method="POST" action="">{% csrf_token %}
+    <p>
+        Nome de Usuário:
+        <input type="text" name="username" required="required" />
+    </p>
+    <p>
+        Senha:
+        <input type="password" name="password" required="required" />
+    </p>
+    <input type="submit" value="Entrar" />
+</form>
