@@ -8,5 +8,5 @@ urlpatterns = [
     url(r'^inicio/$', InicioView.as_view(), name='inicio'),
     url(r'^index/$', InicioView.as_view(), name='inicio'),
 
-    url(r'^cadastro/$', CadastroUsuario.as_view(), name='cadastro-usuario')
+    url(r'^cadastro/$', CadastroUsuario.as_view(), name='cadastro_usuario')
 ]

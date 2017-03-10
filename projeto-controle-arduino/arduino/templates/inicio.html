@@ -5,4 +5,7 @@
 {% block content %}
 <h3>Entrar</h3>
 {% include 'formularios/login.html' %}
+<p>
+    Não tem uma conta? <a href="{% url 'cadastro_usuario' %}">Clique aqui</a>
+</p>
 {% endblock %}

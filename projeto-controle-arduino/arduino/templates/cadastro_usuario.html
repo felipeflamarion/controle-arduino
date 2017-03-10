@@ -1,0 +1,34 @@
+{% extends '__base__.html' %}
+
+{% block title %}Cadastro{% endblock %}
+
+{% block content %}
+<a href="{% url 'inicio' %}">Voltar ao Início</a>
+
+<h2>Cadastrar</h2>
+
+{% if usuario_form %}
+<form method="POST" action="">{% csrf_token %}
+
+    {% if usuario_form.errors %}
+    <div style="color: red;">
+        {{ usuario_form.errors }}
+    </div>
+    {% endif %}
+
+    {{ usuario_form.as_p }}
+
+    <input type="submit" value="Registrar" />
+</form>
+{% else %}
+    {% if cadastro_realizado %}
+    <div style="color: #1fa900;">
+        Cadastro realizado com sucesso!
+    </div>
+    <a href="{% url 'inicio' %}">
+        Faça login aqui
+    </a>
+    {% endif %}
+{% endif %}
+
+{% endblock %}
