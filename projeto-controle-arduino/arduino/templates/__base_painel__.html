@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Controle Arduino - {% block title %}{% endblock %}</title>
+    {% block extreahead %}{% endblock %}
+</head>
+<body>
+    <div style="width: 100%; border-bottom: 5px solid #000; text-align: center; ">
+        <h1>Controle Arduino</h1>
+    </div>
+    <div style="width: 100%; text-align: center; margin-top: 10px; ">
+        <a href="{% url 'painel' %}">
+            Início
+        </a> |
+        <a href="{% url 'logout' %}">
+            Sair
+        </a>
+    </div>
+    {% block content %}{% endblock %}
+</body>
+</html>

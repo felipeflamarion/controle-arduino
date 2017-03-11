@@ -19,10 +19,16 @@ class Login(View):
         if usuario:
             if usuario.is_active:
                 login(request, usuario)
-                return HttpResponseRedirect(urlresolvers.reverse('inicio'))
+                return HttpResponseRedirect(urlresolvers.reverse('painel'))
             else:
                 self.context['login_error'] = u'Usuário desativado!'
         else:
             self.context['login_error'] = u'Usuário ou Senha inválidos!'
 
         return render(request, 'inicio.html', self.context)
+
+class Logout(View):
+
+    def get(self, request):
+        logout(request)
+        return HttpResponseRedirect(urlresolvers.reverse('inicio'))
