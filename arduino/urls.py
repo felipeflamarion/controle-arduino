@@ -12,4 +12,5 @@ urlpatterns = [
     url(r'^logout/$', Logout.as_view(), name='logout'),
 
     url(r'^painel/$', Painel.as_view(), name='painel'),
+    url(r'^equipamento/cadastrar/$', CadastroEquipamento.as_view(), name='cadastro_equipamento'),
 ]
