@@ -10,11 +10,17 @@ class CadastroUsuario(View):
     template = 'cadastro_usuario.html'
 
     def get(self, request):
+        if request.user.is_authenticated:
+            return HttpResponseRedirect(urlresolvers.reverse('painel'))
+
         context = {}
         context['usuario_form'] = UsuarioForm
         return render(request, self.template, context)
 
     def post(self, request):
+        if request.user.is_authenticated:
+            return HttpResponseRedirect(urlresolvers.reverse('painel'))
+
         context = {}
         usuario_form = UsuarioForm(request.POST)
 

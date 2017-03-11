@@ -1,0 +1,15 @@
+{% extends '__base_painel__.html' %}
+
+{% block title %}Cadastrar Equipamento{% endblock %}
+
+{% block content %}
+
+{% if equipamento_form %}
+    <h2>Cadastrar Equipamento!</h2>
+
+    <form method="POST" action="{% url 'cadastro_equipamento' %}" enctype="multipart/form-data" >{% csrf_token %}
+        {{ equipamento_form.as_p }}
+        <input type="submit" value="Cadastrar" />
+    </form>
+{% endif %}
+{% endblock %}

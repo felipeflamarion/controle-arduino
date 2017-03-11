@@ -10,12 +10,9 @@
         <h1>Controle Arduino</h1>
     </div>
     <div style="width: 100%; text-align: center; margin-top: 10px; ">
-        <a href="{% url 'painel' %}">
-            Início
-        </a> |
-        <a href="{% url 'logout' %}">
-            Sair
-        </a>
+        <a href="{% url 'painel' %}">Início</a> |
+        <a href="{% url 'cadastro_equipamento' %}">Cadastrar Equipamentos</a> |
+        <a href="{% url 'logout' %}">Sair</a>
     </div>
     {% block content %}{% endblock %}
 </body>

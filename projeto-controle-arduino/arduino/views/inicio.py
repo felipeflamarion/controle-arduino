@@ -9,4 +9,6 @@ class InicioView(View):
     template = 'inicio.html'
 
     def get(self, request):
+        if request.user.is_authenticated:
+            return HttpResponseRedirect(urlresolvers.reverse('painel'))
         return render(request, self.template, self.context)
