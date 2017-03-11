@@ -4,6 +4,11 @@
 
 {% block content %}
 <h3>Entrar</h3>
+{% if login_error %}
+<div style="color: red;">
+    {{ login_error }}
+</div>
+{% endif %}
 {% include 'formularios/login.html' %}
 <p>
     Não tem uma conta? <a href="{% url 'cadastro_usuario' %}">Clique aqui</a>
