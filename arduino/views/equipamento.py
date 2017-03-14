@@ -1,8 +1,9 @@
-#coding:utf-8
+# coding:utf-8
 from django.shortcuts import render, HttpResponseRedirect
 from django.core import urlresolvers
 from django.views.generic import View
 from arduino.forms import EquipamentoForm
+
 
 class CadastroEquipamento(View):
 

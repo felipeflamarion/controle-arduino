@@ -2,6 +2,7 @@
 from django import forms
 from arduino.models import Equipamento
 
+
 class EquipamentoForm(forms.ModelForm):
 
     class Meta:
