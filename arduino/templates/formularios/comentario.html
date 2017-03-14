@@ -1,0 +1,11 @@
+{% if equipamento %}
+<form method="POST" action="{% url 'comentar' id_equipamento=equipamento.id %}">{% csrf_token %}
+    <p>
+        Comentário
+    </p>
+    <p>
+        <textarea type="text" name="mensagem" required="required" rows="2" cols="100"></textarea>
+        <input type="submit" value="Enviar" />
+    </p>
+</form>
+{% endif %}

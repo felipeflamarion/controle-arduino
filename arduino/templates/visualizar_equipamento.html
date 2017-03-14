@@ -43,5 +43,18 @@
     <img src="{{ equipamento.foto.url }}" />
 
     <h2>Comentários</h2>
+
+    {% include 'formularios/comentario.html' %}
+
+    {% if comentarios %}
+        {% for comentario in comentarios %}
+        <div style="border-bottom: 2px solid #252525; padding: 5px;">
+            <h3>{{ comentario.mensagem }}</h3>
+            <i>
+                {{ comentario.usuario.username }} - em {{ comentario.data|date:"d/m/y" }}
+            </i>
+        </div>
+        {% endfor %}
+    {% endif %}
 {% endif %}
 {% endblock %}

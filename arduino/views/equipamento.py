@@ -3,7 +3,7 @@ from django.shortcuts import render, HttpResponseRedirect
 from django.core import urlresolvers
 from django.views.generic import View
 from arduino.forms import EquipamentoForm
-from arduino.models import Equipamento
+from arduino.models import Equipamento, Comentario
 
 
 class CadastroEquipamento(View):
@@ -42,6 +42,8 @@ class VisualizarEquipamento(View):
         context = {}
         try:
             equipamento = Equipamento.objects.get(id=id_equipamento)
+            comentarios = Comentario.objects.filter(equipamento=equipamento).order_by('-data')
+            context['comentarios'] = comentarios
             context['equipamento'] = equipamento
             return render(request, self.template, context)
         except:
