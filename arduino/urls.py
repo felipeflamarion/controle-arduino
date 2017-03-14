@@ -13,4 +13,8 @@ urlpatterns = [
 
     url(r'^painel/$', Painel.as_view(), name='painel'),
     url(r'^equipamento/cadastrar/$', CadastroEquipamento.as_view(), name='cadastro_equipamento'),
+
+    url(r'^equipamento/desativar/(?P<id_equipamento>[\d]+)$', DesativarEquipamento.as_view(), name='desativar_equipamento'),
+    url(r'^equipamento/ativar/(?P<id_equipamento>[\d]+)$', AtivarEquipamento.as_view(), name='ativar_equipamento'),
+    url(r'^equipamento/(?P<id_equipamento>[\d]+)$', VisualizarEquipamento.as_view(), name='visualizar_equipamento'),
 ]

@@ -1,0 +1,47 @@
+{% extends '__base_painel__.html' %}
+
+{% block title %}Visualizar Equipamento{% endblock %}
+
+{% block content %}
+
+{% if equipamento %}
+    <h1>{{ equipamento.descricao }}</h1>
+
+    <h4>
+    {% if equipamento.ativo %}
+        <a href="{% url 'desativar_equipamento' id_equipamento=equipamento.id %}">Desativar</a>
+    {% else %}
+        <a href="{% url 'ativar_equipamento' id_equipamento=equipamento.id %}">Ativar</a>
+    {% endif %}
+    </h4>
+
+    <table>
+        <tr>
+            <td>Observações</td>
+            <td>{{ equipamento.observacoes }}</td>
+        </tr>
+        <tr>
+            <td>Quantidade Total</td>
+            <td>{{ equipamento.quantidade_total }}</td>
+        </tr>
+        <tr>
+            <td>Quantidade Disponível</td>
+            <td>{{ equipamento.quantidade_disponivel }}</td>
+        </tr>
+        <tr>
+            <td>Caixa</td>
+            <td>{{ equipamento.caixa.descricao }}</td>
+        </tr>
+        <tr>
+            <td>Categoria</td>
+            <td>{{ equipamento.categoria.descricao }}</td>
+        </tr>
+    </table>
+
+    <h2>Foto</h2>
+
+    <img src="{{ equipamento.foto.url }}" />
+
+    <h2>Comentários</h2>
+{% endif %}
+{% endblock %}

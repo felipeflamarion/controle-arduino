@@ -17,9 +17,12 @@
     {% for equipamento in equipamentos_recentemente_cadastrados %}
     <li>
         <strong>
-            {{ equipamento.descricao }}
+            <a href="{% url 'visualizar_equipamento' id_equipamento=equipamento.id %}">
+                {{ equipamento.descricao }}
+            </a>
+            {% if equipamento.ativo == False %}<i>(Inativo)</i>{% endif %}
         </strong></br>
-        <img style="width: 50px; height: 50px;" src="{{ equipamento.foto.url }}" /></br>
+        <img style="width: 150px; height: 150px;" src="{{ equipamento.foto.url }}" /></br>
         <span style="color: #4f4c4c; font-size: 12px;">
             Adicionado em {{ equipamento.data_registro|date:"d/m/Y" }}
         </span>
