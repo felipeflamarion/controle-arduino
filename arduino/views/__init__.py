@@ -5,3 +5,4 @@ from log import Login, Logout
 from painel import Painel
 from equipamento import CadastroEquipamento, VisualizarEquipamento, DesativarEquipamento, AtivarEquipamento
 from comentario import Comentar
+from utilizacao import Emprestar

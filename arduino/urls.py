@@ -19,4 +19,6 @@ urlpatterns = [
     url(r'^equipamento/(?P<id_equipamento>[\d]+)$', VisualizarEquipamento.as_view(), name='visualizar_equipamento'),
 
     url(r'^equipamento/comentar/(?P<id_equipamento>[\d]+)$', Comentar.as_view(), name='comentar'),
+
+    url(r'^equipamento/emprestar/(?P<id_equipamento>[\d]+)$', Emprestar.as_view(), name='emprestar'),
 ]

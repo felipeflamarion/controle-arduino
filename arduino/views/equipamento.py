@@ -75,5 +75,12 @@ class AtivarEquipamento(View):
             print("Houveram durante a ativação do equipamento")
             return HttpResponseRedirect(urlresolvers.reverse('painel'))
 
+class AcrescentarUnidade(View):
 
+    def get(self, request, id_equipamento):
+        return None
 
+class ReduzirUnidade(View):
+
+    def get(self, request, id_equipamento):
+        return None

@@ -7,4 +7,4 @@ class EquipamentoForm(forms.ModelForm):
 
     class Meta:
         model = Equipamento
-        fields = ('descricao', 'observacao', 'quantidade_total', 'foto', 'caixa', 'categoria')
+        fields = ('descricao', 'observacao', 'foto', 'caixa', 'categoria')

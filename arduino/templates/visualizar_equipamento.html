@@ -7,13 +7,36 @@
 {% if equipamento %}
     <h1>{{ equipamento.descricao }}</h1>
 
+    {% if user.is_staff %}
     <h4>
     {% if equipamento.ativo %}
         <a href="{% url 'desativar_equipamento' id_equipamento=equipamento.id %}">Desativar</a>
     {% else %}
         <a href="{% url 'ativar_equipamento' id_equipamento=equipamento.id %}">Ativar</a>
     {% endif %}
+        | <a href="">+ Acrescentar</a>
+        | <a href="">- Reduzir</a>
     </h4>
+    {% endif %}
+
+    <h2>Retirar/Emprestar</h2>
+    {% if equipamento.quantidade_disponivel == '0' %}
+    <span>
+        <i>Equipamento indisponível para empréstimo</i>
+    </span>
+    {% else %}
+    <form method="POST" action="{% url 'emprestar' id_equipamento=equipamento.id %}">{% csrf_token %}
+        <p>
+            Quantidade:
+        </p>
+        <p>
+            <input type="text" name="quantidade" value="{{ equipamento.quantidade_disponivel }}" required="required">
+        </p>
+        <input type="submit" value="Emprestar" />
+    </form>
+    {% endif %}
+
+    <h2>Detalhes</h2>
 
     <table>
         <tr>
