@@ -3,12 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <title>Controle Arduino - {% block title %}{% endblock %}</title>
+
+    {% include '__head__.html' %}
+
     {% block extreahead %}{% endblock %}
 </head>
 <body>
-    <div style="width: 100%; background: #000; text-align: center; color: #ffffff;">
-        <h1>Controle Arduino</h1>
+
+<div class="ui centered grid">
+
+    <div class="black row">
+        <div class="twelve wide left aligned barra_superior column">
+            <article class="logo">
+                Inventário <mark>Arduino</mark>
+            </article>
+
+            <div class="menu">
+                <button>
+                    HOME
+                </button>
+                <button>
+                    HELP
+                </button>
+            </div>
+        </div>
     </div>
-    {% block content %}{% endblock %}
+
+    <div class="row">
+        {% block content %}{% endblock %}
+    </div>
+</div>
+
 </body>
 </html>

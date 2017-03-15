@@ -3,14 +3,35 @@
 {% block title %}Início{% endblock %}
 
 {% block content %}
-<h3>Entrar</h3>
-{% if login_error %}
-<div style="color: red;">
-    {{ login_error }}
+<div class="eight wide center aligned column">
+
 </div>
-{% endif %}
-{% include 'formularios/login.html' %}
-<p>
-    Não tem uma conta? <a href="{% url 'cadastro_usuario' %}">Clique aqui</a>
-</p>
+<div class="four wide center aligned column">
+    <h3 class="ui left aligned header">
+        <i class="sign in icon"></i>
+        <div class="content">
+            Entrar
+            <div class="sub header">
+                Acesse o sistema com seu nome de usuário e senha
+            </div>
+        </div>
+    </h3>
+    {% if login_error %}
+    <div class="ui error message">
+        {{ login_error }}
+    </div>
+    {% endif %}
+    {% include 'formularios/login.html' %}
+
+    <div class="ui divider"></div>
+
+    <p>
+        <span class="ui header">
+            Não tem uma conta?
+        </span>
+    </p>
+    <p>
+        <a href="{% url 'cadastro_usuario' %}" class="ui basic blue large button">Cadastre-se aqui</a>
+    </p>
+</div>
 {% endblock %}

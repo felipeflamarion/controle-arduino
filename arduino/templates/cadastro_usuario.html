@@ -3,31 +3,67 @@
 {% block title %}Cadastro{% endblock %}
 
 {% block content %}
+<div class="six wide center aligned column">
     {% if usuario_form %}
-    <a href="{% url 'inicio' %}">Voltar ao Início</a>
+    <h3 class="ui centered icon header">
+        <i class="add user icon"></i>
+        <div class="content">
+            Cadastrar
+            <div class="sub header">
+                Preencha o formulário abaixo
+            </div>
+        </div>
+    </h3>
 
-    <h2>Cadastrar</h2>
-
-    <form method="POST" action="{% url 'cadastro_usuario' %}">{% csrf_token %}
+    <form method="POST" action="{% url 'cadastro_usuario' %}" class="ui large form">{% csrf_token %}
         {% if usuario_form.errors %}
             <div style="color: red;">
                 {{ usuario_form.errors }}
             </div>
         {% endif %}
 
-        {{ usuario_form.as_p }}
+        <div class="field">
+            <label>Nome de Usuário</label>
+            <div class="ui left icon input">
+                <i class="user icon"></i>
+                {{ usuario_form.username }}
+            </div>
+        </div>
+        <div class="field">
+            <label>Nome</label>
+            <div class="ui left icon input">
+                <i class="user icon"></i>
+                {{ usuario_form.first_name }}
+            </div>
+        </div>
+        <div class="field">
+            <label>Email</label>
+            <div class="ui left icon input">
+                <i class="at icon"></i>
+                {{ usuario_form.email }}
+            </div>
+        </div>
+        <div class="field">
+            <label>Senha</label>
+            <div class="ui left icon input">
+                <i class="lock icon"></i>
+                {{ usuario_form.password }}
+            </div>
+        </div>
 
-        <input type="submit" value="Registrar" />
+        <input type="submit" class="ui right floated large green submit button" value="Cadastrar" />
     </form>
 
     {% else %}
         {% if cadastro_realizado %}
-            <div style="color: #1fa900;">
+            <div class="ui large success message">
                 Cadastro realizado com sucesso!
             </div>
-            <a href="{% url 'inicio' %}">
+            <a href="{% url 'inicio' %}" class="ui large labeled icon teal fluid button">
+                <i class="home icon"></i>
                 Faça login aqui
             </a>
         {% endif %}
     {% endif %}
+</div>
 {% endblock %}
