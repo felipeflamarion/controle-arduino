@@ -9,5 +9,5 @@ class Painel(View):
 
     def get(self, request):
         context = {}
-        context['equipamentos_recentemente_cadastrados'] = Equipamento.objects.order_by('-data_registro')[:5]
+        context['equipamentos_recentemente_cadastrados'] = Equipamento.objects.order_by('-data_registro', '-id')[:6]
         return render(request, self.template, context)

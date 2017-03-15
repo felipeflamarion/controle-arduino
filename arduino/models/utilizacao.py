@@ -9,6 +9,7 @@ class Utilizacao(models.Model):
     quantidade_utilizada = models.CharField(max_length=3, default=1)
     usuario = models.ForeignKey(Usuario)
     equipamento = models.ForeignKey(Equipamento)
+    ativo = models.BooleanField(default=True)
 
     class Meta:
         verbose_name_plural = u'Utilizações'

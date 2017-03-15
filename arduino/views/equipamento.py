@@ -3,7 +3,7 @@ from django.shortcuts import render, HttpResponseRedirect
 from django.core import urlresolvers
 from django.views.generic import View
 from arduino.forms import EquipamentoForm
-from arduino.models import Equipamento, Comentario
+from arduino.models import Equipamento, Comentario, Utilizacao
 
 
 class CadastroEquipamento(View):
@@ -42,9 +42,13 @@ class VisualizarEquipamento(View):
         context = {}
         try:
             equipamento = Equipamento.objects.get(id=id_equipamento)
-            comentarios = Comentario.objects.filter(equipamento=equipamento).order_by('-data')
+            comentarios = Comentario.objects.filter(equipamento=equipamento).order_by('data')
+            utilizacoes = Utilizacao.objects.filter(equipamento=equipamento, ativo=True).order_by('quantidade_utilizada')
+
             context['comentarios'] = comentarios
             context['equipamento'] = equipamento
+            context['utilizacoes'] = utilizacoes
+
             return render(request, self.template, context)
         except:
             pass
@@ -78,9 +82,26 @@ class AtivarEquipamento(View):
 class AcrescentarUnidade(View):
 
     def get(self, request, id_equipamento):
-        return None
+        try:
+            equipamento = Equipamento.objects.get(id=id_equipamento)
+            equipamento.quantidade_total = str(int(equipamento.quantidade_total) + 1)
+            equipamento.quantidade_disponivel = str(int(equipamento.quantidade_disponivel) + 1)
+            equipamento.save()
+        except:
+            print("Houveram erros ao acrescentar unidade")
+
+        return HttpResponseRedirect(urlresolvers.reverse('visualizar_equipamento', args=({id_equipamento: equipamento.id})))
 
 class ReduzirUnidade(View):
 
     def get(self, request, id_equipamento):
-        return None
+        try:
+            equipamento = Equipamento.objects.get(id=id_equipamento)
+            if int(equipamento.quantidade_disponivel) > 0:
+                equipamento.quantidade_total = str(int(equipamento.quantidade_total) - 1)
+                equipamento.quantidade_disponivel = str(int(equipamento.quantidade_disponivel) - 1)
+                equipamento.save()
+        except:
+            print("Houveram erros ao reduzir unidade")
+
+        return HttpResponseRedirect(urlresolvers.reverse('visualizar_equipamento', args=({id_equipamento: equipamento.id})))

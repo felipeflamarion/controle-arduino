@@ -14,26 +14,47 @@
     {% else %}
         <a href="{% url 'ativar_equipamento' id_equipamento=equipamento.id %}">Ativar</a>
     {% endif %}
-        | <a href="">+ Acrescentar</a>
-        | <a href="">- Reduzir</a>
+        | <a href="{% url 'acrescentar_equipamento' id_equipamento=equipamento.id %}">+ Acrescentar</a>
+
+        {% if equipamento.quantidade_disponivel != '0' %}
+            | <a href="{% url 'reduzir_equipamento' id_equipamento=equipamento.id %}">- Reduzir</a>
+        {% endif %}
     </h4>
     {% endif %}
 
     <h2>Retirar/Emprestar</h2>
     {% if equipamento.quantidade_disponivel == '0' %}
-    <span>
-        <i>Equipamento indisponível para empréstimo</i>
-    </span>
-    {% else %}
-    <form method="POST" action="{% url 'emprestar' id_equipamento=equipamento.id %}">{% csrf_token %}
-        <p>
-            Quantidade:
-        </p>
-        <p>
-            <input type="text" name="quantidade" value="{{ equipamento.quantidade_disponivel }}" required="required">
-        </p>
-        <input type="submit" value="Emprestar" />
-    </form>
+        <span>
+            <i>Equipamento indisponível para empréstimo</i>
+        </span>
+        {% else %}
+        <form method="POST" action="{% url 'emprestar' id_equipamento=equipamento.id %}">{% csrf_token %}
+            <p>
+                Quantidade:
+            </p>
+            <p>
+                <input type="text" name="quantidade" value="1" required="required">
+            </p>
+            <input type="submit" value="Emprestar" />
+        </form>
+    {% endif %}
+
+    {% if utilizacoes|length > 0 %}
+        <h2>Retiradas</h2>
+
+        <br>
+        {% for utilizacao in utilizacoes %}
+            <li>
+                {{ utilizacao.usuario.username }} - Quantidade: {{ utilizacao.quantidade_utilizada }}
+                </br>
+                <i>Data retirada: {{ utilizacao.data_retirada|date:"h:i d/m/y" }}</i>
+
+                {% if user == utilizacao.usuario and utilizacao.ativo %}
+                    <a href="{% url 'devolver' id_utilizacao=utilizacao.id %}">Devolver</a>
+                {% endif %}
+            </li>
+        {% endfor %}
+        </ul>
     {% endif %}
 
     <h2>Detalhes</h2>

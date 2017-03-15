@@ -17,8 +17,11 @@ urlpatterns = [
     url(r'^equipamento/desativar/(?P<id_equipamento>[\d]+)$', DesativarEquipamento.as_view(), name='desativar_equipamento'),
     url(r'^equipamento/ativar/(?P<id_equipamento>[\d]+)$', AtivarEquipamento.as_view(), name='ativar_equipamento'),
     url(r'^equipamento/(?P<id_equipamento>[\d]+)$', VisualizarEquipamento.as_view(), name='visualizar_equipamento'),
+    url(r'^equipamento/acrescentar/(?P<id_equipamento>[\d]+)$', AcrescentarUnidade.as_view(), name='acrescentar_equipamento'),
+    url(r'^equipamento/reduzir/(?P<id_equipamento>[\d]+)$', ReduzirUnidade.as_view(), name='reduzir_equipamento'),
 
     url(r'^equipamento/comentar/(?P<id_equipamento>[\d]+)$', Comentar.as_view(), name='comentar'),
 
     url(r'^equipamento/emprestar/(?P<id_equipamento>[\d]+)$', Emprestar.as_view(), name='emprestar'),
+    url(r'^equipamento/devolver/(?P<id_utilizacao>[\d]+)$', Devolver.as_view(), name='devolver'),
 ]
