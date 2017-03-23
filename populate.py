@@ -1,23 +1,26 @@
+# coding: utf-8
 import os
+
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'core.settings')
 
 import django
+
 django.setup()
 
 from arduino.models import CategoriaModel, LocalModel
 
-def populate():
-    ferramenta = add_categoria('ferramenta')
-    arduino = add_categoria('arduino')
-    shield = add_categoria('shield')
-    dispositivo = add_categoria('dispositivo')
-    cabo = add_categoria('cabo')
 
-    local1 = add_local('Local 1')
-    local2 = add_local('Local 2')
-    local3 = add_local('Local 3')
-    local4 = add_local('Local 4')
-    local5 = add_local('Local 5')
+def populate():
+    ferramenta = add_categoria('Ferramentas')
+    arduino = add_categoria('Arduinos')
+    shield = add_categoria('Shields')
+    dispositivo = add_categoria('Dispositivos')
+    cabo = add_categoria('Cabos')
+
+    locais = ['Caixa de Ferramentas', 'Caixa de Novos', 'Caixa de Usados', 'Caixa Organizadora 1',
+              'Caixa Organizadora 2', 'Caixa Organizadora 3', 'Caixa Organizadora 4']
+    for local in locais:
+        add_local(local)
 
 
 def add_categoria(descricao):
