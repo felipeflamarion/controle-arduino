@@ -33,3 +33,7 @@
     border-left-color: #8e0000;
     -webkit-transition: 500ms;
 }
+
+.barra_superior .menu a{
+    color: red!important;
+}

@@ -9,5 +9,5 @@ class PainelView(View):
 
     def get(self, request):
         context_dict = {
-            'equipamentos_recentemente_cadastrados': EquipamentoModel.objects.order_by('-data_registro', '-id')[:6]}
+            'equipamentos_recentemente_cadastrados': EquipamentoModel.objects.order_by('-data_registro', '-id')[:10]}
         return render(request, self.template, context_dict)

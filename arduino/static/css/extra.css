@@ -1,0 +1,13 @@
+.item.logout{
+    border: 1px solid #af2523;
+    border-radius: 0.25em;
+    color: #af2523!important;
+}
+
+.item.logout:hover{
+    background-color: #fffcfc!important;
+}
+
+.card .image img{
+
+}

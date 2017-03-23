@@ -3,32 +3,39 @@
 {% block title %}Painel{% endblock %}
 
 {% block content %}
-<h3>Bem-vindo!</h3>
+<div class="twelve wide column">
+    <h3>Bem-vindo!</h3>
 
-{% if user.is_staff %}
-    ADMIN
-{% else %}
-    NORMAL
-{% endif %}
+    {% if user.is_staff %}
+        ADMIN
+    {% else %}
+        NORMAL
+    {% endif %}
 
-{% if equipamentos_recentemente_cadastrados %}
-<h3>Equipamentos Recentemente Cadastrados</h3>
-<ul>
-    {% for equipamento in equipamentos_recentemente_cadastrados %}
-    <li style="list-style: none;">
-        <img style="width: 50px; height: 50px; border-radius: 15%; border: 1px solid #000" src="{{ equipamento.foto.url }}" />
-        <strong>
-            <a href="{% url 'visualizar_equipamento' id_equipamento=equipamento.id %}">
-                {{ equipamento.descricao }}
-            </a>
-            {% if equipamento.ativo == False %}<i>(Inativo)</i>{% endif %}
-        </strong>
-        <span style="color: #4f4c4c; font-size: 12px;">
-            Adicionado em {{ equipamento.data_registro|date:"H:i d/m/Y" }}
-        </span>
-    </li>
-    {% endfor %}
-</ul>
+    {% if equipamentos_recentemente_cadastrados %}
+    <h1>
+        Equipamentos recentemente cadastrados
+    </h1>
+
+    <div class="ui five cards">
+        {% for equipamento in equipamentos_recentemente_cadastrados %}
+        <div class="card">
+            <div class="image">
+                <img src="{{ equipamento.foto.url }}" />
+            </div>
+
+            <div class="content">
+                <div class="description">
+                    {{ equipamento.descricao }}
+                </div>
+            </div>
+            <div class="extra content">
+                Quantidade disponível: {{ equipamento.quantidade_disponivel }}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
 {% endif %}
 
 {% endblock %}
