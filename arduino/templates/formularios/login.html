@@ -1,4 +1,5 @@
-<form method="POST" action="{% url 'login' %}" class="ui large form">{% csrf_token %}
+<form method="POST" action="{% url 'login' %}" class="ui large form">
+    {% csrf_token %}
     <div class="field">
         <label>Nome de Usuário</label>
 

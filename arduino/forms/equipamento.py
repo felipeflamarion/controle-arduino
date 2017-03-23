@@ -1,10 +1,10 @@
-#coding:utf-8
+# coding: utf-8
 from django import forms
-from arduino.models import Equipamento
+from arduino.models import EquipamentoModel
 
 
 class EquipamentoForm(forms.ModelForm):
 
     class Meta:
-        model = Equipamento
-        fields = ('descricao', 'observacao', 'foto', 'caixa', 'categoria')
+        model = EquipamentoModel
+        fields = ('descricao', 'observacao', 'foto', 'local', 'categoria')

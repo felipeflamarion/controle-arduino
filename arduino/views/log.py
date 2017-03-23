@@ -1,18 +1,18 @@
-#coding:utf-8
+# coding: utf-8
 from django.shortcuts import render, HttpResponseRedirect
 from django.core import urlresolvers
 from django.contrib.auth import authenticate, login, logout
 from django.views.generic import View
 
-class Login(View):
 
-    context = {}
+class LoginView(View):
+    template = 'inicio.html'
 
     def post(self, request):
+        context_dict = {}
 
         username = request.POST.get('username')
         password = request.POST.get('password')
-        print('\nUsername: %s\nPassword: %s' % (username, password))
 
         usuario = authenticate(username=username, password=password)
 
@@ -21,14 +21,13 @@ class Login(View):
                 login(request, usuario)
                 return HttpResponseRedirect(urlresolvers.reverse('painel'))
             else:
-                self.context['login_error'] = u'Usuário desativado!'
+                context_dict['login_error'] = u'Usuário desativado!'
         else:
-            self.context['login_error'] = u'Usuário ou Senha inválidos!'
+            context_dict['login_error'] = u'Usuário ou Senha inválidos!'
 
-        return render(request, 'inicio.html', self.context)
+        return render(request, self.template, context_dict)
 
-class Logout(View):
 
-    def get(self, request):
-        logout(request)
-        return HttpResponseRedirect(urlresolvers.reverse('inicio'))
+def Logout(request):
+    logout(request)
+    return HttpResponseRedirect(urlresolvers.reverse('inicio'))

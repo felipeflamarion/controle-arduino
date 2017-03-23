@@ -1,9 +1,9 @@
-#coding:utf-8
+# coding: utf-8
 from django import forms
 from arduino.models import Usuario
 
-class UsuarioForm(forms.ModelForm):
 
+class UsuarioForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput())
 
     class Meta:

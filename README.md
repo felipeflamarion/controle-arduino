@@ -1,6 +1,6 @@
 # controle-arduino
 
-Projeto desenvolvido para catalogação de equipamentos e registros de empréstimos dos mesmos
+Projeto desenvolvido para inventário de equipamentos relacionados à Arduino e registros de empréstimos dos mesmos.
 
 Instituto Federal Catarinense Câmpus Araquari
 

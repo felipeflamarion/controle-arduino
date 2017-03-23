@@ -1,19 +1,19 @@
-#coding:utf-8
+# coding: utf-8
 from django.shortcuts import render, HttpResponseRedirect
 from django.core import urlresolvers
 from django.views.generic import View
 import datetime
-from arduino.models import Utilizacao, Equipamento
+from arduino.models import UtilizacaoModel, EquipamentoModel
 
-class Emprestar(View):
+
+class EmprestarView(View):
 
     def post(self, request, id_equipamento):
         try:
-            equipamento = Equipamento.objects.get(pk=id_equipamento)
-
+            equipamento = EquipamentoModel.objects.get(pk=id_equipamento)
             usuario = request.user
             quantidade_utilizada = request.POST.get('quantidade')
-            utilizacao = Utilizacao(
+            utilizacao = UtilizacaoModel(
                 equipamento=equipamento,
                 usuario=usuario,
                 quantidade_utilizada=quantidade_utilizada
@@ -27,11 +27,12 @@ class Emprestar(View):
 
         return HttpResponseRedirect(urlresolvers.reverse('visualizar_equipamento', args=({id_equipamento: equipamento.id})))
 
-class Devolver(View):
+
+class DevolverView(View):
 
     def get(self, request, id_utilizacao):
         try:
-            utilizacao = Utilizacao.objects.get(pk=id_utilizacao)
+            utilizacao = UtilizacaoModel.objects.get(pk=id_utilizacao)
             id_equipamento = utilizacao.equipamento.id
 
             if request.user == utilizacao.usuario: # and utilizacao.ativo:
@@ -45,6 +46,3 @@ class Devolver(View):
         except:
             pass
         return HttpResponseRedirect(urlresolvers.reverse('painel'))
-
-
-

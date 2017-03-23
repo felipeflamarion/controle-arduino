@@ -1,8 +1,9 @@
-#coding:utf-8
+# coding: utf-8
 from inicio import InicioView
-from usuario import CadastroUsuario
-from log import Login, Logout
-from painel import Painel
-from equipamento import CadastroEquipamento, VisualizarEquipamento, DesativarEquipamento, AtivarEquipamento, AcrescentarUnidade, ReduzirUnidade
-from comentario import Comentar
-from utilizacao import Emprestar, Devolver
+from usuario import CadastroUsuarioView
+from log import LoginView, Logout
+from painel import PainelView
+from equipamento import CadastroEquipamentoView, VisualizarEquipamentoView, DesativarEquipamentoView, \
+    AtivarEquipamentoView, AcrescentarUnidadeView, ReduzirUnidadeView
+from comentario import ComentarView
+from utilizacao import EmprestarView, DevolverView

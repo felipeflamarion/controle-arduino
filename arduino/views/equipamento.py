@@ -1,22 +1,20 @@
-# coding:utf-8
+# coding: utf-8
 from django.shortcuts import render, HttpResponseRedirect
 from django.core import urlresolvers
 from django.views.generic import View
 from arduino.forms import EquipamentoForm
-from arduino.models import Equipamento, Comentario, Utilizacao
+from arduino.models import EquipamentoModel, ComentarioModel, UtilizacaoModel
 
 
-class CadastroEquipamento(View):
-
+class CadastroEquipamentoView(View):
     template = 'cadastro_equipamento.html'
 
     def get(self, request):
-        context = {}
-        context['equipamento_form'] = EquipamentoForm()
-        return render(request, self.template, context)
+        context_dict = {'equipamento_form': EquipamentoForm()}
+        return render(request, self.template, context_dict)
 
     def post(self, request):
-        context = {}
+        context_dict = {}
         equipamento_form = EquipamentoForm(data=request.POST)
 
         if equipamento_form.is_valid():
@@ -31,77 +29,78 @@ class CadastroEquipamento(View):
         else:
             print('Error: The form was submited with errors!')
 
-        context['usuario_form'] = equipamento_form
-        return render(request, self.template, context)
+        context_dict['usuario_form'] = equipamento_form
+        return render(request, self.template, context_dict)
 
-class VisualizarEquipamento(View):
 
+class VisualizarEquipamentoView(View):
     template = 'visualizar_equipamento.html'
 
-    def get(self, request, id_equipamento):
-        context = {}
+    def get(self, request, id_equipamento=None):
+        context_dict = {}
         try:
-            equipamento = Equipamento.objects.get(id=id_equipamento)
-            comentarios = Comentario.objects.filter(equipamento=equipamento).order_by('data')
-            utilizacoes = Utilizacao.objects.filter(equipamento=equipamento, ativo=True).order_by('quantidade_utilizada')
+            equipamento = EquipamentoModel.objects.get(id=id_equipamento)
+            comentarios = ComentarioModel.objects.filter(equipamento=equipamento).order_by('data')
+            utilizacoes = UtilizacaoModel.objects.filter(equipamento=equipamento, ativo=True).order_by('quantidade_utilizada')
 
-            context['comentarios'] = comentarios
-            context['equipamento'] = equipamento
-            context['utilizacoes'] = utilizacoes
+            context_dict['comentarios'] = comentarios
+            context_dict['equipamento'] = equipamento
+            context_dict['utilizacoes'] = utilizacoes
 
-            return render(request, self.template, context)
+            return render(request, self.template, context_dict)
         except:
             pass
         return HttpResponseRedirect(urlresolvers.reverse('painel'))
 
 
-class DesativarEquipamento(View):
+class DesativarEquipamentoView(View):
 
-    def get(self, request, id_equipamento):
+    def get(self, request, id_equipamento=None):
         try:
-            equipamento = Equipamento.objects.get(id=id_equipamento)
+            equipamento = EquipamentoModel.objects.get(id=id_equipamento)
             equipamento.ativo = False
             equipamento.save()
-            return HttpResponseRedirect(urlresolvers.reverse('visualizar_equipamento', args=({id_equipamento: equipamento.id})))
+            return HttpResponseRedirect(urlresolvers.reverse('visualizar_equipamento', args=[equipamento.id]))
         except:
             print("Houveram durante a desativação do equipamento!")
             return HttpResponseRedirect(urlresolvers.reverse('painel'))
 
-class AtivarEquipamento(View):
 
-    def get(self, request, id_equipamento):
+class AtivarEquipamentoView(View):
+
+    def get(self, request, id_equipamento=None):
         try:
-            equipamento = Equipamento.objects.get(id=id_equipamento)
+            equipamento = EquipamentoModel.objects.get(id=id_equipamento)
             equipamento.ativo = True
             equipamento.save()
-            return HttpResponseRedirect(urlresolvers.reverse('visualizar_equipamento', args=({id_equipamento: equipamento.id})))
+            return HttpResponseRedirect(urlresolvers.reverse('visualizar_equipamento', args=[equipamento.id]))
         except:
             print("Houveram durante a ativação do equipamento")
             return HttpResponseRedirect(urlresolvers.reverse('painel'))
 
-class AcrescentarUnidade(View):
 
-    def get(self, request, id_equipamento):
+class AcrescentarUnidadeView(View):
+
+    def get(self, request, id_equipamento=None):
         try:
-            equipamento = Equipamento.objects.get(id=id_equipamento)
+            equipamento = EquipamentoModel.objects.get(id=id_equipamento)
             equipamento.quantidade_total = str(int(equipamento.quantidade_total) + 1)
             equipamento.quantidade_disponivel = str(int(equipamento.quantidade_disponivel) + 1)
             equipamento.save()
         except:
             print("Houveram erros ao acrescentar unidade")
+        return HttpResponseRedirect(urlresolvers.reverse('visualizar_equipamento', args=[id_equipamento]))
 
-        return HttpResponseRedirect(urlresolvers.reverse('visualizar_equipamento', args=({id_equipamento: equipamento.id})))
 
-class ReduzirUnidade(View):
+class ReduzirUnidadeView(View):
 
-    def get(self, request, id_equipamento):
+    def get(self, request, id_equipamento=None):
         try:
-            equipamento = Equipamento.objects.get(id=id_equipamento)
+            equipamento = EquipamentoModel.objects.get(id=id_equipamento)
             if int(equipamento.quantidade_disponivel) > 0:
                 equipamento.quantidade_total = str(int(equipamento.quantidade_total) - 1)
                 equipamento.quantidade_disponivel = str(int(equipamento.quantidade_disponivel) - 1)
                 equipamento.save()
         except:
             print("Houveram erros ao reduzir unidade")
-
-        return HttpResponseRedirect(urlresolvers.reverse('visualizar_equipamento', args=({id_equipamento: equipamento.id})))
+        return HttpResponseRedirect(urlresolvers.reverse('visualizar_equipamento', args=[id_equipamento]))
