@@ -14,6 +14,23 @@ class CadastroEquipamentoView(View):
         return render(request, self.template, context_dict)
 
     def post(self, request):
+        if request.POST['id']:  # EDIÇÃO
+            id = request.POST['id']
+            equipamento = EquipamentoModel.objects.get(pk=id)
+            form = EquipamentoForm(instance=equipamento, data=request.POST)
+        else:  # CADASTRO NOVO
+            id = None
+            form = EquipamentoForm(data=request.POST)
+
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect('/')
+        else:
+            print(form.errors)
+
+        return render(request, self.template, {'form': form, 'method': 'post', 'id': id})
+
+    '''def post(self, request):
         context_dict = {}
         equipamento_form = EquipamentoForm(data=request.POST)
 
@@ -27,11 +44,11 @@ class CadastroEquipamentoView(View):
             else:
                 print('Error: Image upload have been failed!')
         else:
-            print('Error: The form was submited with errors!')
+            print(equipamento_form.errors)
 
         context_dict['usuario_form'] = equipamento_form
-        return render(request, self.template, context_dict)
-
+        return render(request, self.template, {'usuario_form': equipamento_form})
+'''
 
 class VisualizarEquipamentoView(View):
     template = 'visualizar_equipamento.html'

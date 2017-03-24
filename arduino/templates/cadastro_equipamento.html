@@ -4,58 +4,86 @@
 
 {% block content %}
 
-{% if equipamento_form %}
-<div class="ten wide column">
-    <h1 class="ui header">
-        <i class="plus icon"></i>
-        <div class="content">
-            Cadastrar Equipamento
-            <div class="sub header">
-                Preencha o formulário abaixo
+    {% if equipamento_form %}
+        <div class="ten wide column">
+        <h1 class="ui header">
+            <i class="plus icon"></i>
+            <div class="content">
+                Cadastrar Equipamento
+                <div class="sub header">
+                    Preencha o formulário abaixo
+                </div>
             </div>
-        </div>
-    </h1>
+        </h1>
 
-    <form method="POST" action="{% url 'cadastro_equipamento' %}" enctype="multipart/form-data" class="ui form">{% csrf_token %}
-        <div class="field">
-            <label>Descrição</label>
-            <div class="ui input">
-                {{ equipamento_form.descricao }}
+        <form method="POST" action="{% url 'cadastro_equipamento' %}" enctype="multipart/form-data"
+              class="ui form">
+            {% csrf_token %}
+            {% if not id %}
+                <input type="hidden" name="id" value="">
+            {% else %}
+                <input type="hidden" name="id" value="{{ id }}">
+            {% endif %}
+
+
+            <div class="fields">
+                <div class="fourteen wide field">
+                    <label>Descrição</label>
+                    <div class="ui input">
+                        {{ form.descricao }}
+                        {% if form.descricao.errors %}
+                            <div class="ui pointing red basic label">
+                                {{ form.descricao.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="two wide field">
+                    <label>Quantidade</label>
+                    <div class="ui input">
+                        {{ equipamento_form.quantidade_total }}
+                        {% if form.quantidade_total.errors %}
+                            <div class="ui pointing red basic label">
+                                {{ form.quantidade_total.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
             </div>
-        </div>
 
-        <div class="three fields">
+            <div class="three fields">
+                <div class="field">
+                    <label>Foto</label>
+                    {{ equipamento_form.foto }}
+                </div>
+
+                <div class="field">
+                    <label>Local</label>
+                    {{ equipamento_form.local }}
+                </div>
+
+                <div class="field">
+                    <label>Categoria</label>
+                    {{ equipamento_form.categoria }}
+                </div>
+            </div>
+
             <div class="field">
-                <label>Foto</label>
-                {{ equipamento_form.foto }}
+                <label>Observações</label>
+                <div class="ui input">
+                    {{ equipamento_form.observacao }}
+                </div>
             </div>
 
-            <div class="field">
-                <label>Local</label>
-                {{ equipamento_form.local }}
+            <div class="ui two big buttons">
+                <a href="#" class="ui button">
+                    Cancelar
+                </a>
+                <input type="submit" class="ui green button" value="Cadastrar">
             </div>
+        </form>
 
-            <div class="field">
-                <label>Categoria</label>
-                {{ equipamento_form.categoria }}
-            </div>
-        </div>
-
-        <div class="field">
-            <label>Observações</label>
-            <div class="ui input">
-                {{ equipamento_form.observacao }}
-            </div>
-        </div>
-
-        <div class="ui two big buttons">
-            <a href="#" class="ui button">
-                Cancelar
-            </a>
-            <input type="submit" class="ui green button" value="Cadastrar">
-        </div>
-    </form>
-
-{% endif %}
+    {% endif %}
 </div>
 {% endblock %}

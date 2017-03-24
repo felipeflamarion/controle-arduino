@@ -5,7 +5,7 @@ from arduino.models import EquipamentoModel
 
 class TagModel(models.Model):
     descricao = models.CharField(max_length=25, unique=True)
-    equipamento = models.ManyToManyField(EquipamentoModel)
+    equipamento = models.ManyToManyField(EquipamentoModel, blank=True)
 
     def __unicode__(self):
         return u'%s' %self.descricao
