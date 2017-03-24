@@ -4,7 +4,7 @@ from arduino.models import Usuario, EquipamentoModel
 
 
 class ComentarioModel(models.Model):
-    data = models.DateTimeField(auto_now=True, blank=True)
+    data = models.DateTimeField(auto_now=True)
     mensagem = models.CharField(max_length=140)
     usuario = models.ForeignKey(Usuario)
     equipamento = models.ForeignKey(EquipamentoModel)

@@ -16,6 +16,7 @@ def populate():
     shield = add_categoria('Shields')
     dispositivo = add_categoria('Dispositivos')
     cabo = add_categoria('Cabos')
+    outros = add_categoria('Outros')
 
     locais = ['Caixa de Ferramentas', 'Caixa de Novos', 'Caixa de Usados', 'Caixa Organizadora 1',
               'Caixa Organizadora 2', 'Caixa Organizadora 3', 'Caixa Organizadora 4']
