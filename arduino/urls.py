@@ -13,13 +13,13 @@ urlpatterns = [
     url(r'^logout/$', views.Logout, name='logout'),
 
     url(r'^painel/$', views.Painel, name='painel'),
+    url(r'^equipamento/(?P<id_equipamento>[\d]+)/$', VisualizarEquipamentoView.as_view(), name='visualizar_equipamento'),
     url(r'^equipamento/cadastrar/$', CadastroEquipamentoView.as_view(), name='cadastro_equipamento'),
     url(r'^equipamento/editar/(?P<id_equipamento>\d+)/$', CadastroEquipamentoView.as_view(), name='editar_equipamento'),
     url(r'^equipamento/excluir/(?P<id_equipamento>[\d]+)/$', ExcluirEquipamentoView.as_view(),
         name='excluir_equipamento'),
 
     # url(r'^equipamento/ativar/(?P<id_equipamento>[\d]+)/$', AtivarEquipamentoView.as_view(), name='ativar_equipamento'),
-    url(r'^equipamento/(?P<id_equipamento>[\d]+)/$', VisualizarEquipamentoView.as_view(), name='visualizar_equipamento'),
     url(r'^equipamento/acrescentar/(?P<id_equipamento>[\d]+)/$', AcrescentarUnidadeView.as_view(),
         name='acrescentar_equipamento'),
     url(r'^equipamento/reduzir/(?P<id_equipamento>[\d]+)/$', ReduzirUnidadeView.as_view(), name='reduzir_equipamento'),

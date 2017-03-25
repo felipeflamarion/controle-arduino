@@ -61,6 +61,7 @@ class ExcluirEquipamentoView(View):
     def get(self, request, id_equipamento=None):
         try:
             equipamento = EquipamentoModel.objects.get(id=id_equipamento)
+            equipamento.foto.delete()
             equipamento.delete()
             msg = "Equipamento excluído com sucesso."
             cor_msg = "green"
