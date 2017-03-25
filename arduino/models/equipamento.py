@@ -4,8 +4,8 @@ from arduino.models import LocalModel, CategoriaModel
 
 
 class EquipamentoModel(models.Model):
-    descricao = models.CharField(max_length=75, unique=True)
-    observacao = models.CharField(max_length=150, blank=True)
+    descricao = models.CharField(max_length=75, unique=True, null=False)
+    observacao = models.TextField(max_length=150, blank=True)
     quantidade_total = models.CharField(max_length=3, default=0)
     quantidade_disponivel = models.CharField(max_length=3, default=0, blank=True)
     ativo = models.BooleanField(default=True)

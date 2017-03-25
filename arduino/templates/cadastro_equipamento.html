@@ -1,35 +1,62 @@
 {% extends '__base_painel__.html' %}
 
-{% block title %}Cadastrar Equipamento{% endblock %}
+{% block title %}
+    {% if not id %}
+        Cadastrar Equipamento
+    {% else %}
+        Editar Equipamento
+    {% endif %}
+{% endblock %}
 
 {% block content %}
 
-    {% if equipamento_form %}
+    {% if msg %}
         <div class="ten wide column">
-        <h1 class="ui header">
-            <i class="plus icon"></i>
-            <div class="content">
-                Cadastrar Equipamento
-                <div class="sub header">
-                    Preencha o formulário abaixo
+            <div class="ui {{ cor_msg }} message">
+                <div class="header">
+                    {{ msg }}
                 </div>
             </div>
-        </h1>
+            <br/>
+        </div>
+    {% endif %}
 
-        <form method="POST" action="{% url 'cadastro_equipamento' %}" enctype="multipart/form-data"
-              class="ui form">
-            {% csrf_token %}
-            {% if not id %}
-                <input type="hidden" name="id" value="">
-            {% else %}
-                <input type="hidden" name="id" value="{{ id }}">
-            {% endif %}
+    {% if form %}
+        <div class="ten wide column">
+            <h1 class="ui header">
+                {% if not id %}
+                    <i class="plus icon"></i>
+                    <div class="content">
+                        Cadastrar Equipamento
+                        <div class="sub header">
+                            Preencha o formulário abaixo
+                        </div>
+                    </div>
+                {% else %}
+                    <i class="edit icon"></i>
+                    <div class="content">
+                        Editar Equipamento
+                        <div class="sub header">
+                            Faça as alterações no formulário
+                        </div>
+                    </div>
+                    <div class="ui right aligned">
+                        <a class="ui button" href="{% url 'desativar_equipamento' id %}">X - Excluir</a>
+                    </div>
+                {% endif %}
+            </h1>
 
 
-            <div class="fields">
-                <div class="fourteen wide field">
-                    <label>Descrição</label>
-                    <div class="ui input">
+            <form method="POST" action="
+                {% if not id %}{% url 'cadastro_equipamento' %} {% else %}{% url 'editar_equipamento' id %}{% endif %}"
+                  enctype="multipart/form-data" class="ui form">
+                {% csrf_token %}
+
+                <input type="hidden" name="id" value="{% if id %}{{ id }}{% endif %}">
+
+                <div class="fields">
+                    <div class="thirteen wide field">
+                        <label>Descrição</label>
                         {{ form.descricao }}
                         {% if form.descricao.errors %}
                             <div class="ui pointing red basic label">
@@ -37,53 +64,94 @@
                             </div>
                         {% endif %}
                     </div>
-                </div>
 
-                <div class="two wide field">
-                    <label>Quantidade</label>
-                    <div class="ui input">
-                        {{ equipamento_form.quantidade_total }}
+                    <div class="two wide field">
+                        <label>Quantidade</label>
+                        <label>
+                            {% if id %}
+                                <input id="id_quantidade_total" maxlength="3" name="quantidade_total"
+                                       value="{{ form.quantidade_total.value }}" type="text" readonly>
+                            {% else %}
+                                {{ form.quantidade_total }}
+                            {% endif %}
+                        </label>
                         {% if form.quantidade_total.errors %}
                             <div class="ui pointing red basic label">
                                 {{ form.quantidade_total.errors }}
                             </div>
                         {% endif %}
                     </div>
-                </div>
-            </div>
 
-            <div class="three fields">
+                    <div class="one wide field">
+                        <label>Ativo</label>
+                        {{ form.ativo }}
+                        {% if form.ativo.errors %}
+                            <div class="ui pointing red basic label">
+                                {{ form.ativo.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="fields">
+                    <div class="seven wide field">
+                        <label>Foto</label>
+                        {{ form.foto }}
+                        {% if form.foto.errors %}
+                            <div class="ui pointing red basic label">
+                                {{ form.foto.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="five wide field">
+                        <label>Local</label>
+                        {{ form.local }}
+                        {% if form.local.errors %}
+                            <div class="ui pointing red basic label">
+                                {{ form.local.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="four wide field">
+                        <label>Categoria</label>
+                        {{ form.categoria }}
+                        {% if form.categoria.errors %}
+                            <div class="ui pointing red basic label">
+                                {{ form.categoria.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
                 <div class="field">
-                    <label>Foto</label>
-                    {{ equipamento_form.foto }}
+                    <label>Observações</label>
+                    {{ form.observacao }}
+                    {% if form.observacao.errors %}
+                        <div class="ui pointing red basic label">
+                            {{ form.observacao.errors }}
+                        </div>
+                    {% endif %}
                 </div>
 
-                <div class="field">
-                    <label>Local</label>
-                    {{ equipamento_form.local }}
+                <div class="ui three big buttons">
+                    <button type="button" onclick="location.href='{% url 'painel' %}'" class="ui button red">
+                        Cancelar
+                    </button>
+                    <input type="reset" name="limpar" class="ui button default" value="Limpar"/>
+
+                    {% if not id %}
+                        <input type="submit" name="submit" class="ui button green" value="Cadastrar"/>
+                    {% else %}
+                        <input type="submit" name="submit" class="ui button green" value="Atualizar"/>
+                    {% endif %}
+
                 </div>
-
-                <div class="field">
-                    <label>Categoria</label>
-                    {{ equipamento_form.categoria }}
-                </div>
-            </div>
-
-            <div class="field">
-                <label>Observações</label>
-                <div class="ui input">
-                    {{ equipamento_form.observacao }}
-                </div>
-            </div>
-
-            <div class="ui two big buttons">
-                <a href="#" class="ui button">
-                    Cancelar
-                </a>
-                <input type="submit" class="ui green button" value="Cadastrar">
-            </div>
-        </form>
-
+            </form>
+        </div>
+    {% else %}
+        <div class="ui red message">Falha ao carregar o fomulário!</div>
     {% endif %}
-</div>
+
 {% endblock %}

@@ -9,46 +9,52 @@ from arduino.models import EquipamentoModel, ComentarioModel, UtilizacaoModel
 class CadastroEquipamentoView(View):
     template = 'cadastro_equipamento.html'
 
-    def get(self, request):
-        context_dict = {'equipamento_form': EquipamentoForm()}
-        return render(request, self.template, context_dict)
+    def get(self, request, id_equipamento=None):
+        if id_equipamento:  # SE EXISTE ID --> MODO EDIÇÃO
+            equipamento = EquipamentoModel.objects.get(pk=id_equipamento)
+            form = EquipamentoForm(instance=equipamento, )
+        else:  # SE NÃO EXISTE ID --> MODO CADASTRO
+            form = EquipamentoForm()
+        return render(request, self.template, {'form': form, 'id': id_equipamento})
 
-    def post(self, request):
-        if request.POST['id']:  # EDIÇÃO
-            id = request.POST['id']
-            equipamento = EquipamentoModel.objects.get(pk=id)
-            form = EquipamentoForm(instance=equipamento, data=request.POST)
+    def post(self, request, id_equipamento=None):
+        msg = ""
+        cor_msg = ""
+        global qtd_total_banco
+        if id_equipamento:  # EDIÇÃO
+            id_equipamento = request.POST['id']
+            equipamento_banco = EquipamentoModel.objects.get(pk=id_equipamento)
+            qtd_total_banco = equipamento_banco.quantidade_total
+            form = EquipamentoForm(instance=equipamento_banco, data=request.POST)
         else:  # CADASTRO NOVO
-            id = None
             form = EquipamentoForm(data=request.POST)
 
         if form.is_valid():
-            form.save()
-            return HttpResponseRedirect('/')
-        else:
-            print(form.errors)
-
-        return render(request, self.template, {'form': form, 'method': 'post', 'id': id})
-
-    '''def post(self, request):
-        context_dict = {}
-        equipamento_form = EquipamentoForm(data=request.POST)
-
-        if equipamento_form.is_valid():
-            equipamento = equipamento_form.save(commit=False)
+            equipamento = form.save(commit=False)
 
             if 'foto' in request.FILES:
                 equipamento.foto = request.FILES['foto']
-                equipamento.save()
-                return HttpResponseRedirect(urlresolvers.reverse('painel'))
-            else:
-                print('Error: Image upload have been failed!')
-        else:
-            print(equipamento_form.errors)
 
-        context_dict['usuario_form'] = equipamento_form
-        return render(request, self.template, {'usuario_form': equipamento_form})
-'''
+            if not id_equipamento:
+                equipamento.quantidade_disponivel = equipamento.quantidade_total
+
+            if id_equipamento:
+                equipamento.quantidade_total = qtd_total_banco
+
+            equipamento.save()
+
+            if id_equipamento:
+                msg = "Alterações efetuadas com sucesso!"
+            else:
+                msg = "Equipamento cadastrado com sucesso!"
+            cor_msg = "green"
+            form = EquipamentoForm()
+        else:
+            print(form.errors)
+            msg = "Formulário inválido! Tente novamente"
+            cor_msg = "red"
+        return render(request, self.template, {'form': form, 'id': id_equipamento, 'msg': msg, 'cor_msg': cor_msg})
+
 
 class VisualizarEquipamentoView(View):
     template = 'visualizar_equipamento.html'
@@ -58,7 +64,8 @@ class VisualizarEquipamentoView(View):
         try:
             equipamento = EquipamentoModel.objects.get(id=id_equipamento)
             comentarios = ComentarioModel.objects.filter(equipamento=equipamento).order_by('data')
-            utilizacoes = UtilizacaoModel.objects.filter(equipamento=equipamento, ativo=True).order_by('quantidade_utilizada')
+            utilizacoes = UtilizacaoModel.objects.filter(equipamento=equipamento, ativo=True).order_by(
+                'quantidade_utilizada')
 
             context_dict['comentarios'] = comentarios
             context_dict['equipamento'] = equipamento
@@ -71,7 +78,6 @@ class VisualizarEquipamentoView(View):
 
 
 class DesativarEquipamentoView(View):
-
     def get(self, request, id_equipamento=None):
         try:
             equipamento = EquipamentoModel.objects.get(id=id_equipamento)
@@ -79,12 +85,11 @@ class DesativarEquipamentoView(View):
             equipamento.save()
             return HttpResponseRedirect(urlresolvers.reverse('visualizar_equipamento', args=[equipamento.id]))
         except:
-            print("Houveram durante a desativação do equipamento!")
+            print("Houveram erros durante a desativação do equipamento!")
             return HttpResponseRedirect(urlresolvers.reverse('painel'))
 
 
 class AtivarEquipamentoView(View):
-
     def get(self, request, id_equipamento=None):
         try:
             equipamento = EquipamentoModel.objects.get(id=id_equipamento)
@@ -97,7 +102,6 @@ class AtivarEquipamentoView(View):
 
 
 class AcrescentarUnidadeView(View):
-
     def get(self, request, id_equipamento=None):
         try:
             equipamento = EquipamentoModel.objects.get(id=id_equipamento)
@@ -110,7 +114,6 @@ class AcrescentarUnidadeView(View):
 
 
 class ReduzirUnidadeView(View):
-
     def get(self, request, id_equipamento=None):
         try:
             equipamento = EquipamentoModel.objects.get(id=id_equipamento)

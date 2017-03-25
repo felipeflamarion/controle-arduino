@@ -19,7 +19,7 @@
 
             <div class="ui five cards">
                 {% for equipamento in equipamentos_recentemente_cadastrados %}
-                    <div class="card">
+                    <a href="{% url 'editar_equipamento' equipamento.id %}" class="card">
                         {% if equipamento.foto %}
                             <div class="image">
                                 <img src="{{ equipamento.foto.url }}"/>
@@ -34,7 +34,7 @@
                         <div class="extra content">
                             Quantidade disponível: {{ equipamento.quantidade_disponivel }}
                         </div>
-                    </div>
+                    </a>
                 {% endfor %}
             </div>
             </div>

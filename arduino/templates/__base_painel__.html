@@ -3,19 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <title>Controle Arduino - {% block title %}{% endblock %}</title>
-
     {% include '__head__.html' %}
-
     {% block extreahead %}{% endblock %}
 </head>
 
 <body>
+
 <div class="ui centered grid">
 
     <div class="black row">
         <div class="twelve wide left aligned barra_superior column">
             <article class="logo">
-                Inventário <mark>Arduino</mark>
+                Inventário
+                <mark>Arduino</mark>
             </article>
         </div>
     </div>
@@ -52,6 +52,7 @@
     </div>
 </div>
 
+{% include '__scripts__.html' %}
 
 </body>
 </html>
