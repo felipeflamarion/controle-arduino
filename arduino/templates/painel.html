@@ -3,6 +3,18 @@
 {% block title %}Painel{% endblock %}
 
 {% block content %}
+
+    {% if msg %}
+        <div class="ten wide column">
+            <div class="ui {{ cor_msg }} message">
+                <div class="header">
+                    {{ msg }}
+                </div>
+            </div>
+            <br/>
+        </div>
+    {% endif %}
+
     <div class="twelve wide column">
         <h3>Bem-vindo!</h3>
 

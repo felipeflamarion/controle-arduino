@@ -23,29 +23,40 @@
 
     {% if form %}
         <div class="ten wide column">
-            <h1 class="ui header">
-                {% if not id %}
-                    <i class="plus icon"></i>
-                    <div class="content">
-                        Cadastrar Equipamento
-                        <div class="sub header">
-                            Preencha o formulário abaixo
-                        </div>
-                    </div>
-                {% else %}
-                    <i class="edit icon"></i>
-                    <div class="content">
-                        Editar Equipamento
-                        <div class="sub header">
-                            Faça as alterações no formulário
-                        </div>
-                    </div>
-                    <div class="ui right aligned">
-                        <a class="ui button" href="{% url 'desativar_equipamento' id %}">X - Excluir</a>
+            <div class="ui grid">
+                <div class="left floated thirteen wide column">
+                    <h1 class="ui header">
+                        {% if not id %}
+                            <i class="plus icon"></i>
+                            <div class="content">
+                                Cadastrar Equipamento
+                                <div class="sub header">
+                                    Preencha o formulário abaixo
+                                </div>
+                            </div>
+                        {% else %}
+                            <i class="edit icon"></i>
+                            <div class="content">
+                                Editar Equipamento
+                                <div class="sub header">
+                                    Faça as alterações no formulário
+                                </div>
+                            </div>
+                        {% endif %}
+                    </h1>
+                </div>
+
+                {% if id %}
+                    <div class="right floated right aligned three wide column">
+                        <a class="abrirModalConfirmacao" href="#">
+                            <div class="ui labeled icon button red">
+                                <i class="trash icon"></i> Excluir
+                            </div>
+                        </a>
                     </div>
                 {% endif %}
-            </h1>
-
+            </div>
+            <br/>
 
             <form method="POST" action="
                 {% if not id %}{% url 'cadastro_equipamento' %} {% else %}{% url 'editar_equipamento' id %}{% endif %}"
@@ -152,6 +163,29 @@
         </div>
     {% else %}
         <div class="ui red message">Falha ao carregar o fomulário!</div>
+    {% endif %}
+
+
+    {% if id %}
+        {#========== MODAL ==========#}
+        <div class="ui small modal modalConfirmacao">
+            <i class="close icon"></i>
+            <div class="ui icon header">
+                <i class="trash icon"></i>
+                Deseja realmente excluir?
+            </div>
+            <div class="ui actions">
+                <div class="ui green ok inverted button">
+                    <i class="remove icon"></i>
+                    Não
+                </div>
+                <a class="ui red ok inverted button" href="{% url 'excluir_equipamento' id %}">
+                    <i class="remove icon"></i>
+                    Sim
+                </a>
+            </div>
+        </div>
+        {#========== / MODAL ==========#}
     {% endif %}
 
 {% endblock %}

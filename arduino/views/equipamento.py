@@ -2,6 +2,7 @@
 from django.shortcuts import render, HttpResponseRedirect
 from django.core import urlresolvers
 from django.views.generic import View
+from arduino.views.painel import Painel
 from arduino.forms import EquipamentoForm
 from arduino.models import EquipamentoModel, ComentarioModel, UtilizacaoModel
 
@@ -56,6 +57,20 @@ class CadastroEquipamentoView(View):
         return render(request, self.template, {'form': form, 'id': id_equipamento, 'msg': msg, 'cor_msg': cor_msg})
 
 
+class ExcluirEquipamentoView(View):
+    def get(self, request, id_equipamento=None):
+        try:
+            equipamento = EquipamentoModel.objects.get(id=id_equipamento)
+            equipamento.delete()
+            msg = "Equipamento excluído com sucesso."
+            cor_msg = "green"
+        except:
+            print("Houveram erros durante a exclusão do equipamento!")
+            msg = "Erro ao excluir o equipamento."
+            cor_msg = "red"
+        return Painel(request, msg, cor_msg)
+
+
 class VisualizarEquipamentoView(View):
     template = 'visualizar_equipamento.html'
 
@@ -75,30 +90,6 @@ class VisualizarEquipamentoView(View):
         except:
             pass
         return HttpResponseRedirect(urlresolvers.reverse('painel'))
-
-
-class DesativarEquipamentoView(View):
-    def get(self, request, id_equipamento=None):
-        try:
-            equipamento = EquipamentoModel.objects.get(id=id_equipamento)
-            equipamento.ativo = False
-            equipamento.save()
-            return HttpResponseRedirect(urlresolvers.reverse('visualizar_equipamento', args=[equipamento.id]))
-        except:
-            print("Houveram erros durante a desativação do equipamento!")
-            return HttpResponseRedirect(urlresolvers.reverse('painel'))
-
-
-class AtivarEquipamentoView(View):
-    def get(self, request, id_equipamento=None):
-        try:
-            equipamento = EquipamentoModel.objects.get(id=id_equipamento)
-            equipamento.ativo = True
-            equipamento.save()
-            return HttpResponseRedirect(urlresolvers.reverse('visualizar_equipamento', args=[equipamento.id]))
-        except:
-            print("Houveram durante a ativação do equipamento")
-            return HttpResponseRedirect(urlresolvers.reverse('painel'))
 
 
 class AcrescentarUnidadeView(View):
