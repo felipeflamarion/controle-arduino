@@ -82,15 +82,16 @@ class VisualizarEquipamentoView(View):
             comentarios = ComentarioModel.objects.filter(equipamento=equipamento).order_by('data')
             utilizacoes = UtilizacaoModel.objects.filter(equipamento=equipamento, ativo=True).order_by(
                 'quantidade_utilizada')
-
+            qtd_utilizacoes = utilizacoes.count() - 1
             context_dict['comentarios'] = comentarios
             context_dict['equipamento'] = equipamento
             context_dict['utilizacoes'] = utilizacoes
-
-            return render(request, self.template, context_dict)
+            context_dict['ultimo'] = utilizacoes[qtd_utilizacoes]
         except:
+            context_dict['msg'] = "Ocorreu algum erro ao tentar exibir o equipamento!"
+            context_dict['cor_msg'] = "red"
             pass
-        return HttpResponseRedirect(urlresolvers.reverse('painel'))
+        return render(request, self.template, context_dict)
 
 
 class AcrescentarUnidadeView(View):

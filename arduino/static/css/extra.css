@@ -17,3 +17,16 @@
     padding: 0;
     margin: 0;
 }
+
+.list-icon{
+    padding: 0 !important;
+}
+
+.lista-detalhes-equipamento{
+    font-size: 1.2em !important;
+    margin-left: 0 !important;
+}
+
+.lista-detalhes-equipamento .item{
+    margin-bottom: 10px;
+}

@@ -178,8 +178,9 @@
                 <div class="ui green ok inverted button">
                     <i class="remove icon"></i>
                     Não
+                    {% url 'excluir_equipamento' id %}
                 </div>
-                <a class="ui red ok inverted button" href="{% url 'excluir_equipamento' id %}">
+                <a class="ui red ok inverted button">
                     <i class="remove icon"></i>
                     Sim
                 </a>

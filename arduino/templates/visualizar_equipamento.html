@@ -4,101 +4,207 @@
 
 {% block content %}
 
-{% if equipamento %}
-    <h1>{{ equipamento.descricao }}</h1>
-
-    {% if user.is_staff %}
-    <h4>
-    {% if equipamento.ativo %}
-        <a href="{% url 'desativar_equipamento' id_equipamento=equipamento.id %}">Desativar</a>
-    {% else %}
-        <a href="{% url 'ativar_equipamento' id_equipamento=equipamento.id %}">Ativar</a>
-    {% endif %}
-        | <a href="{% url 'acrescentar_equipamento' id_equipamento=equipamento.id %}">+ Acrescentar</a>
-
-        {% if equipamento.quantidade_disponivel != '0' %}
-            | <a href="{% url 'reduzir_equipamento' id_equipamento=equipamento.id %}">- Reduzir</a>
-        {% endif %}
-    </h4>
-    {% endif %}
-
-    <h2>Retirar/Emprestar</h2>
-    {% if equipamento.quantidade_disponivel == '0' %}
-        <span>
-            <i>Equipamento indisponível para empréstimo</i>
-        </span>
-        {% else %}
-        <form method="POST" action="{% url 'emprestar' id_equipamento=equipamento.id %}">{% csrf_token %}
-            <p>
-                Quantidade:
-            </p>
-            <p>
-                <input type="text" name="quantidade" value="1" required="required">
-            </p>
-            <input type="submit" value="Emprestar" />
-        </form>
-    {% endif %}
-
-    {% if utilizacoes|length > 0 %}
-        <h2>Retiradas</h2>
-
-        <br>
-        {% for utilizacao in utilizacoes %}
-            <li>
-                {{ utilizacao.usuario.username }} - Quantidade: {{ utilizacao.quantidade_utilizada }}
-                </br>
-                <i>Data retirada: {{ utilizacao.data_retirada|date:"h:i d/m/y" }}</i>
-
-                {% if user == utilizacao.usuario and utilizacao.ativo %}
-                    <a href="{% url 'devolver' id_utilizacao=utilizacao.id %}">Devolver</a>
-                {% endif %}
-            </li>
-        {% endfor %}
-        </ul>
-    {% endif %}
-
-    <h2>Detalhes</h2>
-
-    <table>
-        <tr>
-            <td>Observações</td>
-            <td>{{ equipamento.observacoes }}</td>
-        </tr>
-        <tr>
-            <td>Quantidade Total</td>
-            <td>{{ equipamento.quantidade_total }}</td>
-        </tr>
-        <tr>
-            <td>Quantidade Disponível</td>
-            <td>{{ equipamento.quantidade_disponivel }}</td>
-        </tr>
-        <tr>
-            <td>Local</td>
-            <td>{{ equipamento.local.descricao }}</td>
-        </tr>
-        <tr>
-            <td>Categoria</td>
-            <td>{{ equipamento.categoria.descricao }}</td>
-        </tr>
-    </table>
-
-    <h2>Foto</h2>
-
-    <img src="{{ equipamento.foto.url }}" style="width: 200px; "/>
-
-    <h2>Comentários</h2>
-
-    {% include 'formularios/comentario.html' %}
-
-    {% if comentarios %}
-        {% for comentario in comentarios %}
-        <div style="border-bottom: 2px solid #252525; padding: 5px;">
-            <h3>{{ comentario.mensagem }}</h3>
-            <i>
-                {{ comentario.usuario.username }} - em {{ comentario.data|date:"d/m/y" }}
-            </i>
+    {% if msg %}
+        <div class="ten wide column">
+            <div class="ui {{ cor_msg }} message">
+                <div class="header">
+                    {{ msg }}
+                </div>
+            </div>
+            <br/>
         </div>
-        {% endfor %}
     {% endif %}
-{% endif %}
+
+    {% if equipamento %}
+        <div class="ten wide column">
+            <div class="ui grid">
+
+                <div class="row">
+                    <div class="left floated thirteen wide column">
+                        <h1 class="ui header">
+                            <i class="hashtag icon"></i>
+                            <div class="content">
+                                {{ equipamento.descricao }}
+                                <div class="sub header">
+                                    Criado em {{ equipamento.data_registro }}
+                                </div>
+                            </div>
+                        </h1>
+                    </div>
+                </div>
+
+                <div class="sixteen wide column">
+                    <div class="ui grid">
+
+                        <div class="five wide column">
+                            <img src="{{ equipamento.foto.url }}" class="ui top aligned medium rounded bordered image"/>
+                        </div>
+
+                        <div class="eight wide column">
+                            <div class="ui list lista-detalhes-equipamento">
+                                <div class="item">
+                                    <div class="header">
+                                        <i class="list icon list-icon"></i> Quantidade
+                                        Total: {{ equipamento.quantidade_total }}
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="header">
+                                        <i class="list icon list-icon"></i> Quantidade
+                                        Disponível: {{ equipamento.quantidade_disponivel }}
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="header">
+                                        <i class="marker icon"></i> Local: {{ equipamento.local.descricao }}
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="header">
+                                        <i class="block layout icon"></i>
+                                        Categoria: {{ equipamento.categoria.descricao }}
+                                    </div>
+                                </div>
+                                {% if equipamento.observacao %}
+                                    <div class="item">
+                                        <div class="header">
+                                            <i class="sticky note icon"></i> Observações: {{ equipamento.observacao }}
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        {% if user.is_staff %}
+                            <div class="three wide column">
+                                <div class="ui vertical buttons">
+                                    {% if equipamento.ativo %}
+                                        <a class="ui labeled icon button red" href="#"><i class="power icon"></i>
+                                            Desativar</a>
+                                    {% else %}
+                                        <a class="ui labeled icon button green" href="#"><i class="power icon"></i>
+                                            Ativar</a>
+                                    {% endif %}
+                                    <a class="ui labeled icon button blue"
+                                       href="{% url 'editar_equipamento' equipamento.id %}">
+                                        <i class="edit icon"></i> Editar
+                                    </a>
+                                    <a class="ui labeled icon button green"
+                                       href="{% url 'acrescentar_equipamento' equipamento.id %}">
+                                        <i class="plus icon"></i> Acrescentar
+                                    </a>
+                                    {% if equipamento.quantidade_disponivel != '0' %}
+                                        <a class="ui labeled icon button gray"
+                                           href="{% url 'reduzir_equipamento' equipamento.id %}">
+                                            <i class="minus icon"></i> Reduzir
+                                        </a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endif %}
+
+                    </div>
+                </div>
+
+                <div class="sixteen wide column">
+                    <div class="ui grid">
+                        {% if utilizacoes|length > 0 %}
+                            <div class="eight wide column">
+                                <div class="ui segment">
+                                    <h2><i class="exchange icon"></i> Empréstimos</h2>
+
+                                    {% for utilizacao in utilizacoes %}
+                                        <div class="ui list">
+                                            <div class="item">
+                                                <div class="header">
+                                                    <i class="user icon"></i>
+                                                    Usuário: {{ utilizacao.usuario.username }}
+                                                </div>
+                                            </div>
+                                            <div class="item">
+                                                <div class="header">
+                                                    <i class="list icon list-icon"></i>
+                                                    Quantidade: {{ utilizacao.quantidade_utilizada }}
+                                                </div>
+                                            </div>
+                                            <div class="item">
+                                                <div class="header">
+                                                    <i class="calendar icon"></i>
+                                                    Data de Retirada: {{ utilizacao.data_retirada|date:"h:i d/m/y" }}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {% if user == utilizacao.usuario and utilizacao.ativo %}
+                                            <a class="ui labeled icon button green"
+                                               href="{% url 'devolver' utilizacao.id %}">
+                                                <i class="reply icon"></i> Devolver
+                                            </a>
+                                        {% endif %}
+                                        <br/>
+
+                                        {% if utilizacao != ultimo %}
+                                            --------------------------------------------------------------
+                                        {% endif %}
+
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        {% if equipamento.quantidade_disponivel == '0' %}
+                            <span><i>Equipamento indisponível para empréstimo</i></span>
+                        {% else %}
+
+                            <div class="eight wide column">
+                            <div class="ui segment">
+                                <h2><i class="shopping basket icon"></i> Emprestar</h2>
+
+                                <form class="ui form" method="POST"
+                                      action="{% url 'emprestar' equipamento.id %}">
+                                    {% csrf_token %}
+
+                                    <div class="fields">
+                                        <div class="four wide field">
+                                            <label>Quantidade</label>
+                                            <input class="input" type="text" name="quantidade" value="1"
+                                                   required="required"/>
+                                        </div>
+                                    </div>
+                                    <input type="submit" class="ui icon button green" value="Emprestar"/>
+                                </form>
+                            </div>
+                        {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- PRECISA ESTILIZAR -->
+                <h2>Comentários</h2>
+
+                {% include 'formularios/comentario.html' %}
+
+                {% if comentarios %}
+                    {% for comentario in comentarios %}
+                        <div style="border-bottom: 2px solid #252525; padding: 5px;">
+                            <h3>{{ comentario.mensagem }}</h3>
+                            <i>
+                                {{ comentario.usuario.username }} - em {{ comentario.data|date:"d/m/y" }}
+                            </i>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                <!-- /PRECISA ESTILIZAR -->
+
+                <br/>
+                <br/>
+
+            </div>
+        </div>
+
+    {% else %}
+        <div class="ui red message">Falha ao carregar o equipamento!</div>
+    {% endif %}
+
 {% endblock %}

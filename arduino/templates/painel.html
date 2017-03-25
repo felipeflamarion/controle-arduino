@@ -31,7 +31,7 @@
 
             <div class="ui five cards">
                 {% for equipamento in equipamentos_recentemente_cadastrados %}
-                    <a href="{% url 'editar_equipamento' equipamento.id %}" class="card">
+                    <a href="{% url 'visualizar_equipamento' equipamento.id %}" class="card">
                         {% if equipamento.foto %}
                             <div class="image">
                                 <img src="{{ equipamento.foto.url }}"/>
@@ -49,7 +49,7 @@
                     </a>
                 {% endfor %}
             </div>
-            </div>
         {% endif %}
+    </div>
 
 {% endblock %}
