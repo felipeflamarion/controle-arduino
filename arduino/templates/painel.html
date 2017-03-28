@@ -16,13 +16,6 @@
     {% endif %}
 
     <div class="twelve wide column">
-        <h3>Bem-vindo!</h3>
-
-        {% if user.is_staff %}
-            ADMIN
-        {% else %}
-            NORMAL
-        {% endif %}
 
         {% if equipamentos_recentemente_cadastrados %}
             <h1>
@@ -44,12 +37,16 @@
                             </div>
                         </div>
                         <div class="extra content">
-                            Quantidade disponível: {{ equipamento.quantidade_disponivel }}
+                            Disponível: {{ equipamento.quantidade_disponivel }}
                         </div>
+                        {% if not equipamento.ativo %}
+                            <div class="extra content">
+                                <strong class="font-yellow">Equipamento desativado</strong>
+                            </div>
+                        {% endif %}
                     </a>
                 {% endfor %}
             </div>
         {% endif %}
     </div>
-
 {% endblock %}

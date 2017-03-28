@@ -1,6 +1,5 @@
 # coding: utf-8
-from django.shortcuts import render, HttpResponseRedirect
-from django.core import urlresolvers
+from django.shortcuts import render
 from django.views.generic import View
 from arduino.views.painel import Painel
 from arduino.forms import EquipamentoForm
@@ -57,61 +56,80 @@ class CadastroEquipamentoView(View):
         return render(request, self.template, {'form': form, 'id': id_equipamento, 'msg': msg, 'cor_msg': cor_msg})
 
 
-class ExcluirEquipamentoView(View):
-    def get(self, request, id_equipamento=None):
-        try:
+def ExcluirEquipamento(request, id_equipamento=None, msg=None, cor_msg=None):
+    if id_equipamento:
+        equipamento = EquipamentoModel.objects.get(pk=id_equipamento)
+        if equipamento:
             equipamento = EquipamentoModel.objects.get(id=id_equipamento)
             equipamento.foto.delete()
             equipamento.delete()
             msg = "Equipamento excluído com sucesso."
             cor_msg = "green"
-        except:
-            print("Houveram erros durante a exclusão do equipamento!")
-            msg = "Erro ao excluir o equipamento."
-            cor_msg = "red"
-        return Painel(request, msg, cor_msg)
+            return Painel(request, msg, cor_msg)
+    msg = "Não foi possível encontrar o equipamento."
+    cor_msg = 'red'
+    return Painel(request, msg, cor_msg)
 
 
-class VisualizarEquipamentoView(View):
-    template = 'visualizar_equipamento.html'
-
-    def get(self, request, id_equipamento=None):
-        context_dict = {}
-        equipamento = EquipamentoModel.objects.get(id=id_equipamento)
-        comentarios = ComentarioModel.objects.filter(equipamento=equipamento).order_by('data')
-        utilizacoes = UtilizacaoModel.objects.filter(equipamento=equipamento, ativo=True).order_by(
-            'quantidade_utilizada')
-        if utilizacoes.count() >= 1:
-            context_dict['ultimo'] = utilizacoes[utilizacoes.count()-1]
-        else:
-            context_dict['ultimo'] = None
-        context_dict['comentarios'] = comentarios
-        context_dict['equipamento'] = equipamento
-        context_dict['utilizacoes'] = utilizacoes
-
-        return render(request, self.template, context_dict)
-
-
-class AcrescentarUnidadeView(View):
-    def get(self, request, id_equipamento=None):
-        try:
+def VisualizarEquipamento(request, id_equipamento=None, msg=None, cor_msg=None):
+    if id_equipamento:
+        equipamento = EquipamentoModel.objects.get(pk=id_equipamento)
+        if equipamento:
+            context_dict = {}
             equipamento = EquipamentoModel.objects.get(id=id_equipamento)
-            equipamento.quantidade_total = str(int(equipamento.quantidade_total) + 1)
-            equipamento.quantidade_disponivel = str(int(equipamento.quantidade_disponivel) + 1)
-            equipamento.save()
-        except:
-            print("Houveram erros ao acrescentar unidade")
-        return HttpResponseRedirect(urlresolvers.reverse('visualizar_equipamento', args=[id_equipamento]))
+            comentarios = ComentarioModel.objects.filter(equipamento=equipamento).order_by('data')
+            utilizacoes = UtilizacaoModel.objects.filter(equipamento=equipamento, ativo=True).order_by(
+                'quantidade_utilizada')
+            if utilizacoes.count() >= 1:
+                context_dict['ultimo'] = utilizacoes[utilizacoes.count() - 1]
+            else:
+                context_dict['ultimo'] = None
+            context_dict['comentarios'] = comentarios
+            context_dict['equipamento'] = equipamento
+            context_dict['utilizacoes'] = utilizacoes
+            context_dict['msg'] = msg
+            context_dict['cor_msg'] = cor_msg
+            return render(request, 'visualizar_equipamento.html', context_dict)
+    msg = "Não foi possível encontrar o equipamento."
+    cor_msg = 'red'
+    return Painel(request, msg, cor_msg)
 
 
-class ReduzirUnidadeView(View):
-    def get(self, request, id_equipamento=None):
-        try:
-            equipamento = EquipamentoModel.objects.get(id=id_equipamento)
-            if int(equipamento.quantidade_disponivel) > 0:
-                equipamento.quantidade_total = str(int(equipamento.quantidade_total) - 1)
-                equipamento.quantidade_disponivel = str(int(equipamento.quantidade_disponivel) - 1)
+def AtivarDesativarEquipamento(request, id_equipamento=None):
+    if id_equipamento:
+        equipamento = EquipamentoModel.objects.get(pk=id_equipamento)
+        if equipamento:
+            if equipamento.ativo:
+                equipamento.ativo = False
                 equipamento.save()
-        except:
-            print("Houveram erros ao reduzir unidade")
-        return HttpResponseRedirect(urlresolvers.reverse('visualizar_equipamento', args=[id_equipamento]))
+                msg = "Equipamento desativado com sucesso."
+                cor_msg = 'green'
+                return VisualizarEquipamento(request, equipamento.id, msg, cor_msg)
+            else:
+                equipamento.ativo = True
+                equipamento.save()
+                msg = "Equipamento ativado com sucesso."
+                cor_msg = 'green'
+                return VisualizarEquipamento(request, equipamento.id, msg, cor_msg)
+    msg = "Não foi possível encontrar o equipamento."
+    cor_msg = 'red'
+    return Painel(request, msg, cor_msg)
+
+
+def AcrescentarUnidade(request, id_equipamento=None):
+    equipamento = EquipamentoModel.objects.get(id=id_equipamento)
+    equipamento.quantidade_total = str(int(equipamento.quantidade_total) + 1)
+    equipamento.quantidade_disponivel = str(int(equipamento.quantidade_disponivel) + 1)
+    equipamento.save()
+    return VisualizarEquipamento(request, id_equipamento)
+
+
+def ReduzirUnidade(request, id_equipamento=None):
+    equipamento = EquipamentoModel.objects.get(id=id_equipamento)
+    if int(equipamento.quantidade_disponivel) > 0 and int(equipamento.quantidade_total > 0):
+        equipamento.quantidade_total = str(int(equipamento.quantidade_total) - 1)
+        equipamento.quantidade_disponivel = str(int(equipamento.quantidade_disponivel) - 1)
+        equipamento.save()
+        return VisualizarEquipamento(request, id_equipamento)
+    else:
+        return VisualizarEquipamento(request, id_equipamento, msg="Não existem mais unidades.", cor_msg="red")

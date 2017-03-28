@@ -38,6 +38,7 @@
                 </a>
 
                 <div class="right floated menu">
+                    <span class="item"><i class="user icon"></i> <strong>{{ request.user }}</strong></span>
                     <a href="{% url 'logout' %}" class="logout item">
                         <i class="sign out icon"></i>
                         Sair
