@@ -1,6 +1,9 @@
 #Pasta media
 media/
 
+#Permitir pasta de mídias fixas do site
+!/arduino/static/media
+
 #DB
 db.sqlite3
 
@@ -63,4 +66,3 @@ docs/_build/
 
 # PyBuilder
 target/
-

@@ -1,14 +1,14 @@
-.item.logout{
+.item.logout {
     border: 1px solid #af2523;
     border-radius: 0.25em;
-    color: #af2523!important;
+    color: #af2523 !important;
 }
 
-.item.logout:hover{
-    background-color: #fffcfc!important;
+.item.logout:hover {
+    background-color: #fffcfc !important;
 }
 
-.card .image img{
+.card .image img {
 
 }
 
@@ -18,15 +18,25 @@
     margin: 0;
 }
 
-.list-icon{
+.list-icon {
     padding: 0 !important;
 }
 
-.lista-detalhes-equipamento{
+.lista-detalhes-equipamento {
     font-size: 1.2em !important;
     margin-left: 0 !important;
 }
 
-.lista-detalhes-equipamento .item{
+.lista-detalhes-equipamento .item {
     margin-bottom: 10px;
+}
+
+.comentarios {
+    border-bottom: 2px solid #252525;
+    padding: 5px;
+}
+
+.comentario-card{
+    width: auto !important;
+    margin: 0 !important;
 }

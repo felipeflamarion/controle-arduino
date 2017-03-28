@@ -77,20 +77,18 @@ class VisualizarEquipamentoView(View):
 
     def get(self, request, id_equipamento=None):
         context_dict = {}
-        try:
-            equipamento = EquipamentoModel.objects.get(id=id_equipamento)
-            comentarios = ComentarioModel.objects.filter(equipamento=equipamento).order_by('data')
-            utilizacoes = UtilizacaoModel.objects.filter(equipamento=equipamento, ativo=True).order_by(
-                'quantidade_utilizada')
-            qtd_utilizacoes = utilizacoes.count() - 1
-            context_dict['comentarios'] = comentarios
-            context_dict['equipamento'] = equipamento
-            context_dict['utilizacoes'] = utilizacoes
-            context_dict['ultimo'] = utilizacoes[qtd_utilizacoes]
-        except:
-            context_dict['msg'] = "Ocorreu algum erro ao tentar exibir o equipamento!"
-            context_dict['cor_msg'] = "red"
-            pass
+        equipamento = EquipamentoModel.objects.get(id=id_equipamento)
+        comentarios = ComentarioModel.objects.filter(equipamento=equipamento).order_by('data')
+        utilizacoes = UtilizacaoModel.objects.filter(equipamento=equipamento, ativo=True).order_by(
+            'quantidade_utilizada')
+        if utilizacoes.count() >= 1:
+            context_dict['ultimo'] = utilizacoes[utilizacoes.count()-1]
+        else:
+            context_dict['ultimo'] = None
+        context_dict['comentarios'] = comentarios
+        context_dict['equipamento'] = equipamento
+        context_dict['utilizacoes'] = utilizacoes
+
         return render(request, self.template, context_dict)
 
 

@@ -1,5 +1,7 @@
 {% extends '__base_painel__.html' %}
 
+{% load static %}
+
 {% block title %}Visualizar Equipamento{% endblock %}
 
 {% block content %}
@@ -37,7 +39,8 @@
                     <div class="ui grid">
 
                         <div class="five wide column">
-                            <img src="{{ equipamento.foto.url }}" class="ui top aligned medium rounded bordered image"/>
+                            <img src="{% if equipamento.foto %}{{ equipamento.foto.url }}{% else %}{% static 'media/sem_imagem.png' %}{% endif %}"
+                                 class="ui top aligned medium rounded bordered image"/>
                         </div>
 
                         <div class="eight wide column">
@@ -107,6 +110,10 @@
                 </div>
 
                 <div class="sixteen wide column">
+                    <div class="ui divider"></div>
+                </div>
+
+                <div class="sixteen wide column">
                     <div class="ui grid">
                         {% if utilizacoes|length > 0 %}
                             <div class="eight wide column">
@@ -143,7 +150,7 @@
                                         {% endif %}
                                         <br/>
 
-                                        {% if utilizacao != ultimo %}
+                                        {% if ultimo != None and utilizacao != ultimo %}
                                             --------------------------------------------------------------
                                         {% endif %}
 
@@ -153,54 +160,71 @@
                         {% endif %}
 
                         {% if equipamento.quantidade_disponivel == '0' %}
-                            <span><i>Equipamento indisponível para empréstimo</i></span>
+                            <div class="eight wide column">
+                                <div class="ui segment" style="padding: 30px;">
+                                    <span class="ui yellow message"><i>Equipamento indisponível para empréstimo</i></span>
+                                </div>
+                            </div>
                         {% else %}
 
                             <div class="eight wide column">
-                            <div class="ui segment">
-                                <h2><i class="shopping basket icon"></i> Emprestar</h2>
+                                <div class="ui segment">
+                                    <h2><i class="shopping basket icon"></i> Emprestar</h2>
 
-                                <form class="ui form" method="POST"
-                                      action="{% url 'emprestar' equipamento.id %}">
-                                    {% csrf_token %}
+                                    <form class="ui form" method="POST"
+                                          action="{% url 'emprestar' equipamento.id %}">
+                                        {% csrf_token %}
 
-                                    <div class="fields">
-                                        <div class="four wide field">
-                                            <label>Quantidade</label>
-                                            <input class="input" type="text" name="quantidade" value="1"
-                                                   required="required"/>
+                                        <div class="fields">
+                                            <div class="four wide field">
+                                                <label>Quantidade</label>
+                                                <input class="input" type="text" name="quantidade" value="1"
+                                                       required="required"/>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <input type="submit" class="ui icon button green" value="Emprestar"/>
-                                </form>
+                                        <input type="submit" class="ui icon button green" value="Emprestar"/>
+                                    </form>
+                                </div>
                             </div>
                         {% endif %}
-                        </div>
                     </div>
                 </div>
 
+                <div class="sixteen wide column">
+                    <div class="ui divider"></div>
+                </div>
 
-                <!-- PRECISA ESTILIZAR -->
-                <h2>Comentários</h2>
+                <div class="row">
+                    <h2><i class="comments icon"></i> Comentários</h2>
+                </div>
 
-                {% include 'formularios/comentario.html' %}
+                <div class="row">
+                    {% include 'formularios/comentario.html' %}
+                </div>
 
-                {% if comentarios %}
-                    {% for comentario in comentarios %}
-                        <div style="border-bottom: 2px solid #252525; padding: 5px;">
-                            <h3>{{ comentario.mensagem }}</h3>
-                            <i>
-                                {{ comentario.usuario.username }} - em {{ comentario.data|date:"d/m/y" }}
-                            </i>
-                        </div>
-                    {% endfor %}
-                {% endif %}
-                <!-- /PRECISA ESTILIZAR -->
-
-                <br/>
-                <br/>
+                <div class="row">
+                    {% if comentarios %}
+                        {% for comentario in comentarios %}
+                            <div class="ui cards sixteen wide column">
+                                <div class="card comentario-card">
+                                    <div class="content  sixteen wide column">
+                                        <div class="header">{{ comentario.usuario.username }}</div>
+                                        <div class="meta">{{ comentario.data|date:"d/m/y" }}</div>
+                                        <div class="description">
+                                            {{ comentario.mensagem }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
 
             </div>
+
+            <br/>
+            <br/>
+
         </div>
 
     {% else %}
