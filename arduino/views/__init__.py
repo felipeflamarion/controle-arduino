@@ -7,3 +7,4 @@ from equipamento import CadastroEquipamentoView, VisualizarEquipamento, ExcluirE
     AcrescentarUnidade, ReduzirUnidade, AtivarDesativarEquipamento, ListaEquipamentos, ListaEquipamentosDesativados
 from comentario import Comentar
 from utilizacao import Emprestar, Devolver
+from ajuda import Ajuda

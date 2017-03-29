@@ -15,18 +15,24 @@
 
     <div class="black row">
         <div class="twelve wide left aligned barra_superior column">
-            <article class="logo">
-                Inventário
-                <mark>Arduino</mark>
-            </article>
+            <a href="{% url 'inicio' %}">
+                <article class="logo">
+                    Inventário
+                    <mark>Arduino</mark>
+                </article>
+            </a>
 
             <div class="menu">
-                <button>
-                    HOME
-                </button>
-                <button>
-                    HELP
-                </button>
+                <a href="{% url 'inicio' %}">
+                    <button class="font-white">
+                        HOME
+                    </button>
+                </a>
+                <a href="{% url 'ajuda' %}">
+                    <button class="font-white">
+                        AJUDA
+                    </button>
+                </a>
             </div>
         </div>
     </div>

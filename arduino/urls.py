@@ -9,6 +9,7 @@ urlpatterns = [
     # PRINCIPAL
     url(r'^$', views.Inicio),
     url(r'^inicio/$', views.Inicio, name='inicio'),
+    url(r'^ajuda/$', views.Ajuda, name='ajuda'),
 
     # USUÁRIO
     url(r'^cadastro/$', CadastroUsuarioView.as_view(), name='cadastro_usuario'),

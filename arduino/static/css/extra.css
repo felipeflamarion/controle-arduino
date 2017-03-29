@@ -45,6 +45,10 @@
     color: #ce9a08;
 }
 
+.font-white{
+    color: white !important;
+}
+
 .detalhes-equipamento-lista-geral{
     margin-left: 30px !important;
     margin-top: 10px !important;

@@ -55,11 +55,14 @@
                                         <strong>Quantidade Disponível:</strong> {{ equipamento.quantidade_disponivel }}
                                     </div>
                                 </div>
+
+                                {% if user.is_superuser %}
                                 <br/>
                                 <a class="ui labeled icon button secondary"
                                    href="{% url 'ativar_desativar_equipamento' equipamento.id %}"><i
                                         class="power icon"></i>
                                     Ativar</a>
+                                {% endif %}
                             </div>
                         </div>
                     </a>

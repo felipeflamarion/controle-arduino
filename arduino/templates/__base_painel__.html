@@ -13,10 +13,12 @@
 
     <div class="black row">
         <div class="twelve wide left aligned barra_superior column">
-            <article class="logo">
-                Inventário
-                <mark>Arduino</mark>
-            </article>
+            <a href="{% url 'inicio' %}">
+                <article class="logo">
+                    Inventário
+                    <mark>Arduino</mark>
+                </article>
+            </a>
         </div>
     </div>
 
@@ -27,10 +29,13 @@
                     <i class="home icon"></i>
                     Início
                 </a>
-                <a href="{% url 'cadastro_equipamento' %}" class="item">
-                    <i class="plus icon"></i>
-                    Cadastrar equipamento
-                </a>
+
+                {% if user.is_superuser %}
+                    <a href="{% url 'cadastro_equipamento' %}" class="item">
+                        <i class="plus icon"></i>
+                        Cadastrar equipamento
+                    </a>
+                {% endif %}
 
                 <a href="{% url 'lista_equipamentos' %}" class="item">
                     <i class="list icon"></i>
