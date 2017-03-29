@@ -4,46 +4,41 @@ from django.core import urlresolvers
 from django.views.generic import View
 import datetime
 from arduino.models import UtilizacaoModel, EquipamentoModel
+from arduino.views import VisualizarEquipamento
 
 
-class EmprestarView(View):
-    def post(self, request, id_equipamento):
-        try:
-            equipamento = EquipamentoModel.objects.get(pk=id_equipamento)
-            usuario = request.user
-            quantidade_utilizada = request.POST.get('quantidade')
-            utilizacao = UtilizacaoModel(
-                equipamento=equipamento,
-                usuario=usuario,
-                quantidade_utilizada=quantidade_utilizada
-            )
+def Emprestar(request, id_equipamento):
+    equipamento = EquipamentoModel.objects.get(pk=id_equipamento)
+    usuario = request.user
+    quantidade_a_emprestar = request.POST.get('quantidade')
+    if quantidade_a_emprestar <= equipamento.quantidade_disponivel:
+        utilizacao = UtilizacaoModel(
+            equipamento=equipamento,
+            usuario=usuario,
+            quantidade_utilizada=quantidade_a_emprestar
+        )
 
-            equipamento.quantidade_disponivel = int(equipamento.quantidade_disponivel) - int(quantidade_utilizada)
-            equipamento.save()
-            utilizacao.save()
-        except:
-            print("Houveram erros durante o empréstimo do equipamento")
+        equipamento.quantidade_disponivel = int(equipamento.quantidade_disponivel) - int(quantidade_a_emprestar)
+        equipamento.save()
+        utilizacao.save()
+        msg = "Empréstimo realizado com sucesso."
+        cor_msg = "green"
+    else:
+        msg="Quantidade inválida."
+        cor_msg="red"
 
-        return HttpResponseRedirect(
-            urlresolvers.reverse('visualizar_equipamento', args=({id_equipamento: equipamento.id})))
+    return VisualizarEquipamento(request, id_equipamento, msg=msg, cor_msg=cor_msg)
 
 
-class DevolverView(View):
-    def get(self, request, id_utilizacao):
-        try:
-            utilizacao = UtilizacaoModel.objects.get(pk=id_utilizacao)
-            id_equipamento = utilizacao.equipamento.id
+def Devolver(request, id_utilizacao):
+    utilizacao = UtilizacaoModel.objects.get(pk=id_utilizacao)
+    id_equipamento = utilizacao.equipamento.id
 
-            if request.user == utilizacao.usuario:  # and utilizacao.ativo:
-                # utilizacao.data_devolucao = datetime.datetime.now()
-                equipamento = utilizacao.equipamento
-                equipamento.quantidade_disponivel = str(
-                    int(equipamento.quantidade_disponivel) + int(utilizacao.quantidade_utilizada))
-                equipamento.save()
-                utilizacao.ativo = False
-                utilizacao.save()
-            return HttpResponseRedirect(
-                urlresolvers.reverse('visualizar_equipamento', args=({id_equipamento: id_equipamento})))
-        except:
-            pass
-        return HttpResponseRedirect(urlresolvers.reverse('painel'))
+    if request.user == utilizacao.usuario:
+        equipamento = utilizacao.equipamento
+        equipamento.quantidade_disponivel = str(
+            int(equipamento.quantidade_disponivel) + int(utilizacao.quantidade_utilizada))
+        equipamento.save()
+        utilizacao.ativo = False
+        utilizacao.save()
+    return VisualizarEquipamento(request, id_equipamento)

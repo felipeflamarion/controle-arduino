@@ -133,3 +133,19 @@ def ReduzirUnidade(request, id_equipamento=None):
         return VisualizarEquipamento(request, id_equipamento)
     else:
         return VisualizarEquipamento(request, id_equipamento, msg="Não existem mais unidades.", cor_msg="red")
+
+
+def ListaEquipamentos(request, msg=None, cor_msg=None):
+    context_dict = {}
+    context_dict['equipamentos'] = EquipamentoModel.objects.filter(ativo=True)
+    context_dict['msg'] = msg
+    context_dict['cor_msg'] = cor_msg
+    return render(request, 'lista_equipamentos.html', context_dict)
+
+
+def ListaEquipamentosDesativados(request, msg=None, cor_msg=None):
+    context_dict = {}
+    context_dict['equipamentos'] = EquipamentoModel.objects.filter(ativo=False)
+    context_dict['msg'] = msg
+    context_dict['cor_msg'] = cor_msg
+    return render(request, 'lista_equipamentos_desativados.html', context_dict)

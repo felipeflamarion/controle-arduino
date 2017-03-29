@@ -1,0 +1,74 @@
+{% extends '__base_painel__.html' %}
+
+{% load static %}
+
+{% block title %}Lista{% endblock %}
+
+{% block content %}
+
+    {% if msg %}
+        <div class="ten wide column">
+            <div class="ui {{ cor_msg }} message">
+                <div class="header">
+                    {{ msg }}
+                </div>
+            </div>
+            <br/>
+        </div>
+    {% endif %}
+
+    <div class="twelve wide column">
+
+        {% if equipamentos %}
+            <h1>
+                Equipamentos
+            </h1>
+
+            <div class="ui items">
+                {% for equipamento in equipamentos %}
+                    <a href="{% url 'visualizar_equipamento' equipamento.id %}">
+                        <div class="item">
+                            <img src="{% if equipamento.foto %}{{ equipamento.foto.url }}{% else %}
+                                 {% static 'media/sem_imagem.png' %}{% endif %}" class="ui rounded bordered small image">
+                            <div class="content detalhes-equipamento-lista-geral">
+                                <a href="{% url 'visualizar_equipamento' equipamento.id %}"
+                                   class="header">{{ equipamento.descricao }}</a>
+                                <div class="extra">
+                                    Criado em {{ equipamento.data_registro }}
+                                </div>
+                                <div class="meta">
+                                    <div class="header">
+                                        <i class="block layout icon"></i>
+                                        <strong>Categoria: </strong>{{ equipamento.categoria.descricao }}
+                                    </div>
+                                </div>
+                                <div class="meta">
+                                    <div class="header">
+                                        <i class="list icon list-icon"></i>
+                                        <strong>Quantidade Total:</strong> {{ equipamento.quantidade_total }}
+                                    </div>
+                                </div>
+                                <div class="meta">
+                                    <div class="header">
+                                        <i class="list icon list-icon"></i>
+                                        <strong>Quantidade Disponível:</strong> {{ equipamento.quantidade_disponivel }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                    <div class="ui divider"></div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="ten wide column">
+                <div class="ui message">
+                    <div class="header">
+                        Sem equipamentos.
+                    </div>
+                </div>
+                <br/>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

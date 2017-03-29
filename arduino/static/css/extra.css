@@ -44,3 +44,8 @@
 .font-yellow{
     color: #ce9a08;
 }
+
+.detalhes-equipamento-lista-geral{
+    margin-left: 30px !important;
+    margin-top: 10px !important;
+}

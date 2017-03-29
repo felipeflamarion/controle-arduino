@@ -1,8 +1,9 @@
 {% if equipamento %}
-    <form class="ui form" method="POST" action="{% url 'comentar' equipamento.id %}">{% csrf_token %}
+    <form class="ui form" method="POST" action="{% url 'comentar' equipamento.id %}">
+        {% csrf_token %}
         <div class="field">
             <label>Novo comentário:</label>
-            <textarea maxlength="140" rows="2" cols="60"></textarea>
+            <textarea name="mensagem" maxlength="140" rows="2" cols="60"></textarea>
         </div>
         <input class="ui icon button secondary" type="submit" value="Comentar"/>
     </form>

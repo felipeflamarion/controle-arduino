@@ -178,13 +178,7 @@
                         {% if equipamento.quantidade_disponivel == '0' %}
                             <div class="eight wide column">
                                 <div class="ui segment" style="padding: 30px;">
-                                    <span class="ui yellow message"><i>Não há equipamentos para empréstimo.</i></span>
-                                </div>
-                            </div>
-                        {% elif equipamento.ativo == False and user.is_staff == False %}
-                            <div class="eight wide column">
-                                <div class="ui segment" style="padding: 30px;">
-                                    <span class="ui yellow message"><i>Equipamento desativado para empréstimo.</i></span>
+                                    <span class="ui yellow message"><i>Equipamento indisponível para empréstimo</i></span>
                                 </div>
                             </div>
                         {% else %}

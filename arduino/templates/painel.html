@@ -1,5 +1,7 @@
 {% extends '__base_painel__.html' %}
 
+{% load static %}
+
 {% block title %}Painel{% endblock %}
 
 {% block content %}
@@ -25,11 +27,11 @@
             <div class="ui five cards">
                 {% for equipamento in equipamentos_recentemente_cadastrados %}
                     <a href="{% url 'visualizar_equipamento' equipamento.id %}" class="card">
-                        {% if equipamento.foto %}
                             <div class="image">
-                                <img src="{{ equipamento.foto.url }}"/>
+                                <img src="{% if equipamento.foto %}{{ equipamento.foto.url }}{% else %}
+                                 {% static 'media/sem_imagem.png' %}{% endif %}"
+                                 class="ui top aligned medium rounded bordered image"/>
                             </div>
-                        {% endif %}
 
                         <div class="content">
                             <div class="description">
