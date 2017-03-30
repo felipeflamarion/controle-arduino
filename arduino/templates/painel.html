@@ -28,7 +28,7 @@
                 {% for equipamento in equipamentos_recentemente_cadastrados %}
                     <a href="{% url 'visualizar_equipamento' equipamento.id %}" class="card">
                             <div class="image">
-                                <img src="{% if equipamento.foto %}{{ equipamento.foto.url }}{% else %}
+                                <img src="{% if equipamento.foto %}{% static equipamento.foto.url %}{% else %}
                                  {% static 'media/sem_imagem.png' %}{% endif %}"
                                  class="ui top aligned medium rounded bordered image"/>
                             </div>

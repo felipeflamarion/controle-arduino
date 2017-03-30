@@ -6,7 +6,7 @@ from arduino.forms import EquipamentoForm
 from arduino.models import EquipamentoModel, ComentarioModel, UtilizacaoModel
 
 
-class CadastroEquipamentoView(View):
+class EquipamentoView(View):
     template = 'cadastro_equipamento.html'
 
     def get(self, request, id_equipamento=None):
@@ -72,27 +72,24 @@ def ExcluirEquipamento(request, id_equipamento=None, msg=None, cor_msg=None):
 
 
 def VisualizarEquipamento(request, id_equipamento=None, msg=None, cor_msg=None):
-    if id_equipamento:
+    context_dict = {}
+    try:
         equipamento = EquipamentoModel.objects.get(pk=id_equipamento)
-        if equipamento:
-            context_dict = {}
-            equipamento = EquipamentoModel.objects.get(id=id_equipamento)
-            comentarios = ComentarioModel.objects.filter(equipamento=equipamento).order_by('data')
-            utilizacoes = UtilizacaoModel.objects.filter(equipamento=equipamento, ativo=True).order_by(
-                'quantidade_utilizada')
-            if utilizacoes.count() >= 1:
-                context_dict['ultimo'] = utilizacoes[utilizacoes.count() - 1]
-            else:
-                context_dict['ultimo'] = None
-            context_dict['comentarios'] = comentarios
-            context_dict['equipamento'] = equipamento
-            context_dict['utilizacoes'] = utilizacoes
-            context_dict['msg'] = msg
-            context_dict['cor_msg'] = cor_msg
-            return render(request, 'visualizar_equipamento.html', context_dict)
-    msg = "Não foi possível encontrar o equipamento."
-    cor_msg = 'red'
-    return Painel(request, msg, cor_msg)
+    except EquipamentoModel.DoesNotExist:
+        msg = "Não existe equipamento com esse ID!"
+        cor_msg = "red"
+        return Painel(request, msg, cor_msg)
+    comentarios = ComentarioModel.objects.filter(equipamento=equipamento).order_by('data')
+    utilizacoes = UtilizacaoModel.objects.filter(equipamento=equipamento, ativo=True).order_by(
+        'quantidade_utilizada')
+    if utilizacoes.count() >= 1:
+        context_dict['ultimo'] = utilizacoes[utilizacoes.count() - 1]
+    else:
+        context_dict['ultimo'] = None
+    context_dict['comentarios'] = comentarios
+    context_dict['equipamento'] = equipamento
+    context_dict['utilizacoes'] = utilizacoes
+    return render(request, 'visualizar_equipamento.html', context_dict)
 
 
 def AtivarDesativarEquipamento(request, id_equipamento=None):

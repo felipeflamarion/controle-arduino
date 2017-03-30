@@ -1,8 +1,7 @@
 #Pasta media
 media/
 
-#Permitir pasta de mídias fixas do site
-!/arduino/static/media
+!/arduino/static/media/sem_imagem.png
 
 #DB
 db.sqlite3
@@ -66,3 +65,4 @@ docs/_build/
 
 # PyBuilder
 target/
+!/arduino/static/media/sem_imagem.png
