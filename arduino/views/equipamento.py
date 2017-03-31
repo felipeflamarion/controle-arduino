@@ -55,94 +55,94 @@ class EquipamentoView(View):
             cor_msg = "red"
         return render(request, self.template, {'form': form, 'id': id_equipamento, 'msg': msg, 'cor_msg': cor_msg})
 
-
-def ExcluirEquipamento(request, id_equipamento=None, msg=None, cor_msg=None):
-    if id_equipamento:
-        equipamento = EquipamentoModel.objects.get(pk=id_equipamento)
-        if equipamento:
-            equipamento = EquipamentoModel.objects.get(id=id_equipamento)
-            equipamento.foto.delete()
-            equipamento.delete()
-            msg = "Equipamento excluído com sucesso."
-            cor_msg = "green"
-            return Painel(request, msg, cor_msg)
-    msg = "Não foi possível encontrar o equipamento."
-    cor_msg = 'red'
-    return Painel(request, msg, cor_msg)
-
-
-def VisualizarEquipamento(request, id_equipamento=None, msg=None, cor_msg=None):
-    context_dict = {}
-    try:
-        equipamento = EquipamentoModel.objects.get(pk=id_equipamento)
-    except EquipamentoModel.DoesNotExist:
-        msg = "Não existe equipamento com esse ID!"
-        cor_msg = "red"
+    @classmethod
+    def ExcluirEquipamento(self, request, id_equipamento=None, msg=None, cor_msg=None):
+        if id_equipamento:
+            equipamento = EquipamentoModel.objects.get(pk=id_equipamento)
+            if equipamento:
+                equipamento = EquipamentoModel.objects.get(id=id_equipamento)
+                equipamento.foto.delete()
+                equipamento.delete()
+                msg = "Equipamento excluído com sucesso."
+                cor_msg = "green"
+                return Painel(request, msg, cor_msg)
+        msg = "Não foi possível encontrar o equipamento."
+        cor_msg = 'red'
         return Painel(request, msg, cor_msg)
-    comentarios = ComentarioModel.objects.filter(equipamento=equipamento).order_by('data')
-    utilizacoes = UtilizacaoModel.objects.filter(equipamento=equipamento, ativo=True).order_by(
-        'quantidade_utilizada')
-    if utilizacoes.count() >= 1:
-        context_dict['ultimo'] = utilizacoes[utilizacoes.count() - 1]
-    else:
-        context_dict['ultimo'] = None
-    context_dict['comentarios'] = comentarios
-    context_dict['equipamento'] = equipamento
-    context_dict['utilizacoes'] = utilizacoes
-    return render(request, 'visualizar_equipamento.html', context_dict)
 
+    @classmethod
+    def VisualizarEquipamento(self, request, id_equipamento=None, msg=None, cor_msg=None):
+        context_dict = {}
+        try:
+            equipamento = EquipamentoModel.objects.get(pk=id_equipamento)
+        except EquipamentoModel.DoesNotExist:
+            msg = "Não existe equipamento com esse ID!"
+            cor_msg = "red"
+            return Painel(request, msg, cor_msg)
+        comentarios = ComentarioModel.objects.filter(equipamento=equipamento).order_by('data')
+        utilizacoes = UtilizacaoModel.objects.filter(equipamento=equipamento, ativo=True).order_by(
+            'quantidade_utilizada')
+        if utilizacoes.count() >= 1:
+            context_dict['ultimo'] = utilizacoes[utilizacoes.count() - 1]
+        else:
+            context_dict['ultimo'] = None
+        context_dict['comentarios'] = comentarios
+        context_dict['equipamento'] = equipamento
+        context_dict['utilizacoes'] = utilizacoes
+        return render(request, 'visualizar_equipamento.html', context_dict)
 
-def AtivarDesativarEquipamento(request, id_equipamento=None):
-    if id_equipamento:
-        equipamento = EquipamentoModel.objects.get(pk=id_equipamento)
-        if equipamento:
-            if equipamento.ativo:
-                equipamento.ativo = False
-                equipamento.save()
-                msg = "Equipamento desativado com sucesso."
-                cor_msg = 'green'
-                return VisualizarEquipamento(request, equipamento.id, msg, cor_msg)
-            else:
-                equipamento.ativo = True
-                equipamento.save()
-                msg = "Equipamento ativado com sucesso."
-                cor_msg = 'green'
-                return VisualizarEquipamento(request, equipamento.id, msg, cor_msg)
-    msg = "Não foi possível encontrar o equipamento."
-    cor_msg = 'red'
-    return Painel(request, msg, cor_msg)
+    @classmethod
+    def AtivarDesativarEquipamento(self, request, id_equipamento=None):
+        if id_equipamento:
+            equipamento = EquipamentoModel.objects.get(pk=id_equipamento)
+            if equipamento:
+                if equipamento.ativo:
+                    equipamento.ativo = False
+                    equipamento.save()
+                    msg = "Equipamento desativado com sucesso."
+                    cor_msg = 'green'
+                    return EquipamentoView.VisualizarEquipamento(request, equipamento.id, msg, cor_msg)
+                else:
+                    equipamento.ativo = True
+                    equipamento.save()
+                    msg = "Equipamento ativado com sucesso."
+                    cor_msg = 'green'
+                    return EquipamentoView.VisualizarEquipamento(request, equipamento.id, msg, cor_msg)
+        msg = "Não foi possível encontrar o equipamento."
+        cor_msg = 'red'
+        return Painel(request, msg, cor_msg)
 
-
-def AcrescentarUnidade(request, id_equipamento=None):
-    equipamento = EquipamentoModel.objects.get(id=id_equipamento)
-    equipamento.quantidade_total = str(int(equipamento.quantidade_total) + 1)
-    equipamento.quantidade_disponivel = str(int(equipamento.quantidade_disponivel) + 1)
-    equipamento.save()
-    return VisualizarEquipamento(request, id_equipamento)
-
-
-def ReduzirUnidade(request, id_equipamento=None):
-    equipamento = EquipamentoModel.objects.get(id=id_equipamento)
-    if int(equipamento.quantidade_disponivel) > 0 and int(equipamento.quantidade_total > 0):
-        equipamento.quantidade_total = str(int(equipamento.quantidade_total) - 1)
-        equipamento.quantidade_disponivel = str(int(equipamento.quantidade_disponivel) - 1)
+    @classmethod
+    def AcrescentarUnidade(self, request, id_equipamento=None):
+        equipamento = EquipamentoModel.objects.get(id=id_equipamento)
+        equipamento.quantidade_total = str(int(equipamento.quantidade_total) + 1)
+        equipamento.quantidade_disponivel = str(int(equipamento.quantidade_disponivel) + 1)
         equipamento.save()
-        return VisualizarEquipamento(request, id_equipamento)
-    else:
-        return VisualizarEquipamento(request, id_equipamento, msg="Não existem mais unidades.", cor_msg="red")
+        return EquipamentoView.VisualizarEquipamento(request, id_equipamento)
 
+    @classmethod
+    def ReduzirUnidade(self, request, id_equipamento=None):
+        equipamento = EquipamentoModel.objects.get(id=id_equipamento)
+        if int(equipamento.quantidade_disponivel) > 0 and int(equipamento.quantidade_total > 0):
+            equipamento.quantidade_total = str(int(equipamento.quantidade_total) - 1)
+            equipamento.quantidade_disponivel = str(int(equipamento.quantidade_disponivel) - 1)
+            equipamento.save()
+            return EquipamentoView.VisualizarEquipamento(request, id_equipamento)
+        else:
+            return EquipamentoView.VisualizarEquipamento(request, id_equipamento, msg="Não existem mais unidades.", cor_msg="red")
 
-def ListaEquipamentos(request, msg=None, cor_msg=None):
-    context_dict = {}
-    context_dict['equipamentos'] = EquipamentoModel.objects.filter(ativo=True)
-    context_dict['msg'] = msg
-    context_dict['cor_msg'] = cor_msg
-    return render(request, 'lista_equipamentos.html', context_dict)
+    @classmethod
+    def ListaEquipamentos(self, request, msg=None, cor_msg=None):
+        context_dict = {}
+        context_dict['equipamentos'] = EquipamentoModel.objects.filter(ativo=True)
+        context_dict['msg'] = msg
+        context_dict['cor_msg'] = cor_msg
+        return render(request, 'lista_equipamentos.html', context_dict)
 
-
-def ListaEquipamentosDesativados(request, msg=None, cor_msg=None):
-    context_dict = {}
-    context_dict['equipamentos'] = EquipamentoModel.objects.filter(ativo=False)
-    context_dict['msg'] = msg
-    context_dict['cor_msg'] = cor_msg
-    return render(request, 'lista_equipamentos_desativados.html', context_dict)
+    @classmethod
+    def ListaEquipamentosDesativados(self, request, msg=None, cor_msg=None):
+        context_dict = {}
+        context_dict['equipamentos'] = EquipamentoModel.objects.filter(ativo=False)
+        context_dict['msg'] = msg
+        context_dict['cor_msg'] = cor_msg
+        return render(request, 'lista_equipamentos_desativados.html', context_dict)

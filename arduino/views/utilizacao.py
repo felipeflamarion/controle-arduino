@@ -1,6 +1,6 @@
 # coding: utf-8
 from arduino.models import UtilizacaoModel, EquipamentoModel
-from arduino.views import VisualizarEquipamento
+from arduino.views import EquipamentoView
 
 
 def Emprestar(request, id_equipamento):
@@ -24,7 +24,7 @@ def Emprestar(request, id_equipamento):
         msg = "Quantidade inválida."
         cor_msg = "red"
 
-    return VisualizarEquipamento(request, id_equipamento, msg=msg, cor_msg=cor_msg)
+    return EquipamentoView.VisualizarEquipamento(request, id_equipamento, msg=msg, cor_msg=cor_msg)
 
 
 def Devolver(request, id_utilizacao):
@@ -38,4 +38,4 @@ def Devolver(request, id_utilizacao):
         equipamento.save()
         utilizacao.ativo = False
         utilizacao.save()
-    return VisualizarEquipamento(request, id_equipamento)
+    return EquipamentoView.VisualizarEquipamento(request, id_equipamento)
