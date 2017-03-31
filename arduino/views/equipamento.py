@@ -1,6 +1,8 @@
 # coding: utf-8
 from django.shortcuts import render
 from django.views.generic import View
+
+from arduino.views.pagination import pagination
 from arduino.views.painel import Painel
 from arduino.forms import EquipamentoForm
 from arduino.models import EquipamentoModel, ComentarioModel, UtilizacaoModel
@@ -136,17 +138,25 @@ class EquipamentoView(View):
     @classmethod
     def ListaEquipamentos(self, request, msg=None, cor_msg=None):
         context_dict = {}
-        context_dict['equipamentos'] = EquipamentoModel.objects.filter(ativo=True)
+        equipamentos = EquipamentoModel.objects.filter(ativo=True)
         context_dict['msg'] = msg
         context_dict['cor_msg'] = cor_msg
+        dados, page_range, ultima = pagination(equipamentos, request.GET.get('page'))
+        context_dict['dados'] = dados
+        context_dict['page_range'] = page_range
+        context_dict['ultima'] = ultima
         return render(request, 'lista_equipamentos.html', context_dict)
 
     @classmethod
     def ListaEquipamentosDesativados(self, request, msg=None, cor_msg=None):
         context_dict = {}
-        context_dict['equipamentos'] = EquipamentoModel.objects.filter(ativo=False)
+        equipamentos = EquipamentoModel.objects.filter(ativo=False)
         context_dict['msg'] = msg
         context_dict['cor_msg'] = cor_msg
+        dados, page_range, ultima = pagination(equipamentos, request.GET.get('page'))
+        context_dict['dados'] = dados
+        context_dict['page_range'] = page_range
+        context_dict['ultima'] = ultima
         return render(request, 'lista_equipamentos_desativados.html', context_dict)
 
     @classmethod

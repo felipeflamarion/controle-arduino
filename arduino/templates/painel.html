@@ -19,13 +19,13 @@
 
     <div class="twelve wide column">
 
-        {% if equipamentos_recentemente_cadastrados %}
+        {% if dados %}
             <h1>
                 Equipamentos recentemente cadastrados
             </h1>
 
             <div class="ui five cards">
-                {% for equipamento in equipamentos_recentemente_cadastrados %}
+                {% for equipamento in dados %}
                     <a href="{% url 'visualizar_equipamento' equipamento.id %}" class="card">
                         <div class="image">
                             <img src="{% if equipamento.foto %}{{ equipamento.foto.url }}{% else %}
@@ -49,6 +49,8 @@
                     </a>
                 {% endfor %}
             </div>
+
+            {% include 'blocos/pagination.html' %}
         {% else %}
             <div class="ten wide column">
                 <div class="ui message">
