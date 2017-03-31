@@ -4,6 +4,8 @@ from django.views.generic import View
 from arduino.views.painel import Painel
 from arduino.forms import EquipamentoForm
 from arduino.models import EquipamentoModel, ComentarioModel, UtilizacaoModel
+from django.shortcuts import HttpResponseRedirect
+from django.core import urlresolvers
 
 
 class EquipamentoView(View):
@@ -146,3 +148,56 @@ class EquipamentoView(View):
         context_dict['msg'] = msg
         context_dict['cor_msg'] = cor_msg
         return render(request, 'lista_equipamentos_desativados.html', context_dict)
+
+    @classmethod
+    def Comentar(self, request, id_equipamento=None):
+        usuario = request.user
+        equipamento = EquipamentoModel.objects.get(pk=id_equipamento)
+        mensagem = request.POST['mensagem']
+
+        comentario = ComentarioModel(
+            usuario=usuario,
+            equipamento=equipamento,
+            mensagem=mensagem
+        )
+        comentario.save()
+
+        return HttpResponseRedirect(urlresolvers.reverse('visualizar_equipamento', args=[id_equipamento]))
+
+    @classmethod
+    def Emprestar(self, request, id_equipamento):
+        equipamento = EquipamentoModel.objects.get(pk=id_equipamento)
+        usuario = request.user
+        qtd_a_emprestar = int(request.POST.get('quantidade'))
+        qtd_disponivel = int(equipamento.quantidade_disponivel)
+        if qtd_a_emprestar <= qtd_disponivel and qtd_a_emprestar > 0:
+            utilizacao = UtilizacaoModel(
+                equipamento=equipamento,
+                usuario=usuario,
+                quantidade_utilizada=qtd_a_emprestar
+            )
+
+            equipamento.quantidade_disponivel = qtd_disponivel - qtd_a_emprestar
+            equipamento.save()
+            utilizacao.save()
+            msg = "Empréstimo realizado com sucesso."
+            cor_msg = "green"
+        else:
+            msg = "Quantidade inválida."
+            cor_msg = "red"
+
+        return EquipamentoView.VisualizarEquipamento(request, id_equipamento, msg=msg, cor_msg=cor_msg)
+
+    @classmethod
+    def Devolver(self, request, id_utilizacao):
+        utilizacao = UtilizacaoModel.objects.get(pk=id_utilizacao)
+        id_equipamento = utilizacao.equipamento.id
+
+        if request.user == utilizacao.usuario:
+            equipamento = utilizacao.equipamento
+            equipamento.quantidade_disponivel = str(
+                int(equipamento.quantidade_disponivel) + int(utilizacao.quantidade_utilizada))
+            equipamento.save()
+            utilizacao.ativo = False
+            utilizacao.save()
+        return EquipamentoView.VisualizarEquipamento(request, id_equipamento)

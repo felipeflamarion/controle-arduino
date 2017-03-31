@@ -32,9 +32,9 @@ urlpatterns = [
     url(r'^equipamento/acrescentar/(?P<id_equipamento>[\d]+)/$', EquipamentoView.AcrescentarUnidade,
         name='acrescentar_equipamento'),
     url(r'^equipamento/reduzir/(?P<id_equipamento>[\d]+)/$', EquipamentoView.ReduzirUnidade, name='reduzir_equipamento'),
-    url(r'^equipamento/comentar/(?P<id_equipamento>[\d]+)/$', views.Comentar, name='comentar'),
-    url(r'^equipamento/emprestar/(?P<id_equipamento>[\d]+)/$', views.Emprestar, name='emprestar'),
-    url(r'^equipamento/devolver/(?P<id_utilizacao>[\d]+)/$', views.Devolver, name='devolver'),
+    url(r'^equipamento/comentar/(?P<id_equipamento>[\d]+)/$', EquipamentoView.Comentar, name='comentar'),
+    url(r'^equipamento/emprestar/(?P<id_equipamento>[\d]+)/$', EquipamentoView.Emprestar, name='emprestar'),
+    url(r'^equipamento/devolver/(?P<id_utilizacao>[\d]+)/$', EquipamentoView.Devolver, name='devolver'),
 
     # 404
     url(r'', TemplateView.as_view(template_name='404.html'), name='404'),
