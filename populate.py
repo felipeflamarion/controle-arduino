@@ -37,13 +37,13 @@ def populate():
 
     ''' EQUIPAMENTOS (descricao, observacao, quantidade_total, quantidade_disponivel, ativo, data_registro, foto, local, categoria) '''
 
-    equipamento_1 = add_equipamento('Arduino UNO', '', 3, 3, True, None, '', caixa_usados, arduino)
-    equipamento_2 = add_equipamento('Raspberry Pi 3 Model B', '', 2, 2, True, None, '', caixa_novos, arduino)
-    equipamento_3 = add_equipamento('DHT 22', '', 5, 5, True, None, '', caixa_novos, shield)
-    equipamento_4 = add_equipamento('Resistor 10K', '', 40, 40, True, None, '', caixa_organizadora_1, conectores)
-    equipamento_5 = add_equipamento('Multímetro', '', 1, 1, True, None, '', caixa_ferramentas, ferramenta)
-    equipamento_6 = add_equipamento('Estação de Solda', '', 1, 1, True, None, '', caixa_ferramentas, ferramenta)
-    equipamento_7 = add_equipamento('Cabo USB A/B', '', 1, 1, True, None, '', local_outros, cabo)
+    # equipamento_1 = add_equipamento('Arduino UNO', '', 3, 3, True, None, '', caixa_usados, arduino)
+    # equipamento_2 = add_equipamento('Raspberry Pi 3 Model B', '', 2, 2, True, None, '', caixa_novos, arduino)
+    # equipamento_3 = add_equipamento('DHT 22', '', 5, 5, True, None, '', caixa_novos, shield)
+    # equipamento_4 = add_equipamento('Resistor 10K', '', 40, 40, True, None, '', caixa_organizadora_1, conectores)
+    # equipamento_5 = add_equipamento('Multímetro', '', 1, 1, True, None, '', caixa_ferramentas, ferramenta)
+    # equipamento_6 = add_equipamento('Estação de Solda', '', 1, 1, True, None, '', caixa_ferramentas, ferramenta)
+    # equipamento_7 = add_equipamento('Cabo USB A/B', '', 1, 1, True, None, '', local_outros, cabo)
 
     ''' TAGS '''
 

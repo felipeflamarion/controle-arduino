@@ -1,7 +1,7 @@
 #Pasta media
 media/
 
-!/arduino/static/media/sem_imagem.png
+!/arduino/static/images/sem_imagem.png
 
 #DB
 db.sqlite3
@@ -65,4 +65,3 @@ docs/_build/
 
 # PyBuilder
 target/
-!/arduino/static/media/sem_imagem.png

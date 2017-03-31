@@ -28,8 +28,8 @@
                 {% for equipamento in equipamentos %}
                     <a href="{% url 'visualizar_equipamento' equipamento.id %}">
                         <div class="item">
-                            <img src="{% if equipamento.foto %}{% static equipamento.foto.url %}{% else %}
-                                 {% static 'media/sem_imagem.png' %}{% endif %}"
+                            <img src="{% if equipamento.foto %}{{ equipamento.foto.url }}{% else %}
+                                {% static 'images/sem_imagem.png' %}{% endif %}"
                                  class="ui rounded bordered small image">
                             <div class="content detalhes-equipamento-lista-geral">
                                 <a href="{% url 'visualizar_equipamento' equipamento.id %}"

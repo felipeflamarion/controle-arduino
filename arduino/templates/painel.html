@@ -27,11 +27,11 @@
             <div class="ui five cards">
                 {% for equipamento in equipamentos_recentemente_cadastrados %}
                     <a href="{% url 'visualizar_equipamento' equipamento.id %}" class="card">
-                            <div class="image">
-                                <img src="{% if equipamento.foto %}{% static equipamento.foto.url %}{% else %}
-                                 {% static 'media/sem_imagem.png' %}{% endif %}"
+                        <div class="image">
+                            <img src="{% if equipamento.foto %}{{ equipamento.foto.url }}{% else %}
+                                {% static 'images/sem_imagem.png' %}{% endif %}"
                                  class="ui top aligned medium rounded bordered image"/>
-                            </div>
+                        </div>
 
                         <div class="content">
                             <div class="description">
@@ -48,6 +48,15 @@
                         {% endif %}
                     </a>
                 {% endfor %}
+            </div>
+        {% else %}
+            <div class="ten wide column">
+                <div class="ui message">
+                    <div class="header">
+                        Sem equipamentos disponíveis.
+                    </div>
+                </div>
+                <br/>
             </div>
         {% endif %}
     </div>

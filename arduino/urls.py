@@ -37,5 +37,5 @@ urlpatterns = [
     url(r'^equipamento/devolver/(?P<id_utilizacao>[\d]+)/$', views.Devolver, name='devolver'),
 
     # 404
-    url(r'', TemplateView.as_view(template_name='404.html'), name='404'),
+    # url(r'', TemplateView.as_view(template_name='404.html'), name='404'),
 ]
