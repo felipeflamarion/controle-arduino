@@ -17,9 +17,9 @@ def Login(request):
             login(request, usuario)
             return HttpResponseRedirect(urlresolvers.reverse('painel'))
         else:
-            context_dict['login_error'] = u'Usuário desativado!'
+            print(u'Usuário desativado!')
     else:
-        context_dict['login_error'] = u'Usuário ou Senha inválidos!'
+        print(u'Usuário ou Senha inválidos!')
 
     return render(request, 'inicio.html', context_dict)
 

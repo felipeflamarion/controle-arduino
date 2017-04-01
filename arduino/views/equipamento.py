@@ -1,13 +1,10 @@
 # coding: utf-8
 from django.shortcuts import render
 from django.views.generic import View
-
-from arduino.views.pagination import pagination
 from arduino.views.painel import Painel
 from arduino.forms import EquipamentoForm
 from arduino.models import EquipamentoModel, ComentarioModel, UtilizacaoModel
-from django.shortcuts import HttpResponseRedirect
-from django.core import urlresolvers
+from pagination import pagination
 
 
 class EquipamentoView(View):
@@ -69,9 +66,12 @@ class EquipamentoView(View):
                 equipamento.delete()
                 msg = "Equipamento excluído com sucesso."
                 cor_msg = "green"
-                return Painel(request, msg, cor_msg)
-        msg = "Não foi possível encontrar o equipamento."
-        cor_msg = 'red'
+            else:
+                msg = "Não foi possível encontrar o equipamento."
+                cor_msg = 'red'
+        else:
+            msg = "Não foi possível encontrar o equipamento."
+            cor_msg = 'red'
         return Painel(request, msg, cor_msg)
 
     @classmethod
@@ -126,37 +126,42 @@ class EquipamentoView(View):
 
     @classmethod
     def ReduzirUnidade(self, request, id_equipamento=None):
+        context_dict = {}
         equipamento = EquipamentoModel.objects.get(id=id_equipamento)
         if int(equipamento.quantidade_disponivel) > 0 and int(equipamento.quantidade_total > 0):
             equipamento.quantidade_total = str(int(equipamento.quantidade_total) - 1)
             equipamento.quantidade_disponivel = str(int(equipamento.quantidade_disponivel) - 1)
             equipamento.save()
-            return EquipamentoView.VisualizarEquipamento(request, id_equipamento)
         else:
-            return EquipamentoView.VisualizarEquipamento(request, id_equipamento, msg="Não existem mais unidades.", cor_msg="red")
+            context_dict['msg'] = "Não existem mais unidades."
+            context_dict['cor_msg'] = "red"
+
+        return EquipamentoView.VisualizarEquipamento(request, id_equipamento, context_dict)
 
     @classmethod
     def ListaEquipamentos(self, request, msg=None, cor_msg=None):
         context_dict = {}
         equipamentos = EquipamentoModel.objects.filter(ativo=True)
+
+        # PAGINATION
+        equipamentos = pagination(request, equipamentos)
+
+        context_dict['dados'] = equipamentos
         context_dict['msg'] = msg
         context_dict['cor_msg'] = cor_msg
-        dados, page_range, ultima = pagination(equipamentos, request.GET.get('page'))
-        context_dict['dados'] = dados
-        context_dict['page_range'] = page_range
-        context_dict['ultima'] = ultima
         return render(request, 'lista_equipamentos.html', context_dict)
 
     @classmethod
     def ListaEquipamentosDesativados(self, request, msg=None, cor_msg=None):
         context_dict = {}
         equipamentos = EquipamentoModel.objects.filter(ativo=False)
+
+        # PAGINATION
+        equipamentos = pagination(request, equipamentos)
+
+        context_dict['dados'] = equipamentos
         context_dict['msg'] = msg
         context_dict['cor_msg'] = cor_msg
-        dados, page_range, ultima = pagination(equipamentos, request.GET.get('page'))
-        context_dict['dados'] = dados
-        context_dict['page_range'] = page_range
-        context_dict['ultima'] = ultima
         return render(request, 'lista_equipamentos_desativados.html', context_dict)
 
     @classmethod
@@ -172,10 +177,11 @@ class EquipamentoView(View):
         )
         comentario.save()
 
-        return HttpResponseRedirect(urlresolvers.reverse('visualizar_equipamento', args=[id_equipamento]))
+        return EquipamentoView.VisualizarEquipamento(request, id_equipamento)
 
     @classmethod
     def Emprestar(self, request, id_equipamento):
+        context_dict = {}
         equipamento = EquipamentoModel.objects.get(pk=id_equipamento)
         usuario = request.user
         qtd_a_emprestar = int(request.POST.get('quantidade'))
@@ -196,7 +202,9 @@ class EquipamentoView(View):
             msg = "Quantidade inválida."
             cor_msg = "red"
 
-        return EquipamentoView.VisualizarEquipamento(request, id_equipamento, msg=msg, cor_msg=cor_msg)
+        context_dict['msg'] = msg
+        context_dict['cor_msg'] = cor_msg
+        return EquipamentoView.VisualizarEquipamento(request, id_equipamento, context_dict)
 
     @classmethod
     def Devolver(self, request, id_utilizacao):

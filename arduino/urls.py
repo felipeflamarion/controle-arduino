@@ -18,8 +18,8 @@ urlpatterns = [
 
     # PÁGINAS
     url(r'^painel/$', views.Painel, name='painel'),
-    url(r'^lista/equipamentos$', EquipamentoView.ListaEquipamentos, name='lista_equipamentos'),
-    url(r'^lista/equipamentos/desativados$', EquipamentoView.ListaEquipamentosDesativados, name='lista_equipamentos_desativados'),
+    url(r'^lista/equipamentos/$', EquipamentoView.ListaEquipamentos, name='lista_equipamentos'),
+    url(r'^lista/equipamentos/desativados/$', EquipamentoView.ListaEquipamentosDesativados, name='lista_equipamentos_desativados'),
 
     url(r'^equipamento/(?P<id_equipamento>[\d]+)/$', EquipamentoView.VisualizarEquipamento,
         name='visualizar_equipamento'),
