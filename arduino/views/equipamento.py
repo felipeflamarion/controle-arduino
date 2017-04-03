@@ -144,9 +144,11 @@ class EquipamentoView(View):
         equipamentos = EquipamentoModel.objects.filter(ativo=True)
 
         # PAGINATION
-        equipamentos = pagination(request, equipamentos)
-
+        equipamentos, page_range, ultima = pagination(equipamentos, request.GET.get('page'))
         context_dict['dados'] = equipamentos
+        context_dict['page_range'] = page_range
+        context_dict['ultima'] = ultima
+
         context_dict['msg'] = msg
         context_dict['cor_msg'] = cor_msg
         return render(request, 'lista_equipamentos.html', context_dict)
@@ -157,7 +159,10 @@ class EquipamentoView(View):
         equipamentos = EquipamentoModel.objects.filter(ativo=False)
 
         # PAGINATION
-        equipamentos = pagination(request, equipamentos)
+        equipamentos, page_range, ultima = pagination(equipamentos, request.GET.get('page'))
+        context_dict['dados'] = equipamentos
+        context_dict['page_range'] = page_range
+        context_dict['ultima'] = ultima
 
         context_dict['dados'] = equipamentos
         context_dict['msg'] = msg
