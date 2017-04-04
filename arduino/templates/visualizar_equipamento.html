@@ -95,13 +95,13 @@
                                 <div class="ui vertical buttons">
                                     {% if equipamento.ativo %}
                                         <a class="ui labeled icon button secondary"
-                                           href="{% url 'ativar_desativar_equipamento' equipamento.id %}"><i
-                                                class="power icon"></i>
+                                           href="{% url 'ativar_desativar_equipamento' equipamento.id %}">
+                                            <i class="power icon"></i>
                                             Desativar</a>
                                     {% else %}
                                         <a class="ui labeled icon button secondary"
-                                           href="{% url 'ativar_desativar_equipamento' equipamento.id %}"><i
-                                                class="power icon"></i>
+                                           href="{% url 'ativar_desativar_equipamento' equipamento.id %}">
+                                            <i class="power icon"></i>
                                             Ativar</a>
                                     {% endif %}
                                     <a class="ui labeled icon button blue"
