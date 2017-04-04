@@ -22,7 +22,7 @@
 
             {% if dados.has_next %}
                 <a href="?page={{ dados.next_page_number }}" class="icon item"><i class="right arrow icon blue"></i></a>
-                <a href="?page={{ ultima }}" class="icon item blue" style="color: #2185d0">Última</a>
+                <a href="?page={{ dados.paginator.num_pages }}" class="icon item blue" style="color: #2185d0">Última</a>
             {% else %}
                 <a href="#" class="icon item"><i class="right arrow icon"></i></a>
                 <a href="#" class="icon item">Última</a>
@@ -31,4 +31,5 @@
     </div>
     </br>
     </br>
+
 {% endif %}

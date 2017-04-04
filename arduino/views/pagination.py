@@ -21,6 +21,9 @@ def pagination(model, page):
     end_index = index + limite_paginas_seguintes if index <= max_index - limite_paginas_seguintes else max_index
     # My new page range
 
-    page_range = paginator.page_range[start_index:end_index]
+    # page_range = paginator.page_range[start_index:end_index]
+    page_range = paginator.page_range
+    page_range = list(page_range)
+    page_range = page_range[start_index:end_index]
 
     return dados, page_range, max_index
