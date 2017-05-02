@@ -1,4 +1,8 @@
 # coding: utf-8
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.models import User
 from django.shortcuts import render
 from django.views.generic import View
 from arduino.views.painel import Painel
@@ -7,74 +11,89 @@ from arduino.models import EquipamentoModel, ComentarioModel, UtilizacaoModel
 from pagination import pagination
 
 
-class EquipamentoView(View):
+class EquipamentoView(LoginRequiredMixin, View):
+    login_url = '/login/'
     template = 'cadastro_equipamento.html'
 
-    def get(self, request, id_equipamento=None):
-        if id_equipamento:  # SE EXISTE ID --> MODO EDIÇÃO
-            equipamento = EquipamentoModel.objects.get(pk=id_equipamento)
-            form = EquipamentoForm(instance=equipamento, )
-        else:  # SE NÃO EXISTE ID --> MODO CADASTRO
-            form = EquipamentoForm()
-        return render(request, self.template, {'form': form, 'id': id_equipamento})
-
-    def post(self, request, id_equipamento=None):
-        msg = ""
-        cor_msg = ""
-        global qtd_total_banco
-        if id_equipamento:  # EDIÇÃO
-            id_equipamento = request.POST['id']
-            equipamento_banco = EquipamentoModel.objects.get(pk=id_equipamento)
-            qtd_total_banco = equipamento_banco.quantidade_total
-            form = EquipamentoForm(instance=equipamento_banco, data=request.POST)
-        else:  # CADASTRO NOVO
-            form = EquipamentoForm(data=request.POST)
-
-        if form.is_valid():
-            equipamento = form.save(commit=False)
-
-            if 'foto' in request.FILES:
-                equipamento.foto = request.FILES['foto']
-
-            if not id_equipamento:
-                equipamento.quantidade_disponivel = equipamento.quantidade_total
-
-            if id_equipamento:
-                equipamento.quantidade_total = qtd_total_banco
-
-            equipamento.save()
-
-            if id_equipamento:
-                msg = "Alterações efetuadas com sucesso!"
-            else:
-                msg = "Equipamento cadastrado com sucesso!"
-            cor_msg = "green"
-            form = EquipamentoForm()
+    def get(self, request, id_equipamento=None, msg=None, cor_msg=None):
+        if request.user.is_superuser:
+            if id_equipamento:  # SE EXISTE ID --> MODO EDIÇÃO
+                equipamento = EquipamentoModel.objects.get(pk=id_equipamento)
+                form = EquipamentoForm(instance=equipamento, )
+            else:  # SE NÃO EXISTE ID --> MODO CADASTRO
+                form = EquipamentoForm()
         else:
-            print(form.errors)
-            msg = "Formulário inválido! Tente novamente"
-            cor_msg = "red"
+            msg = "Sem permissões de acesso!"
+            cor_msg = 'yellow'
+            return Painel(request, msg, cor_msg)
         return render(request, self.template, {'form': form, 'id': id_equipamento, 'msg': msg, 'cor_msg': cor_msg})
 
-    @classmethod
-    def ExcluirEquipamento(self, request, id_equipamento=None, msg=None, cor_msg=None):
-        if id_equipamento:
-            equipamento = EquipamentoModel.objects.get(pk=id_equipamento)
-            if equipamento:
-                equipamento = EquipamentoModel.objects.get(id=id_equipamento)
-                equipamento.foto.delete()
-                equipamento.delete()
-                msg = "Equipamento excluído com sucesso."
+    def post(self, request, id_equipamento=None, msg=None, cor_msg=None):
+        if request.user.is_superuser:
+            global qtd_total_banco
+            if id_equipamento:  # EDIÇÃO
+                id_equipamento = request.POST['id']
+                equipamento_banco = EquipamentoModel.objects.get(pk=id_equipamento)
+                qtd_total_banco = equipamento_banco.quantidade_total
+                form = EquipamentoForm(instance=equipamento_banco, data=request.POST)
+            else:  # CADASTRO NOVO
+                form = EquipamentoForm(data=request.POST)
+    
+            if form.is_valid():
+                equipamento = form.save(commit=False)
+    
+                if 'foto' in request.FILES:
+                    equipamento.foto = request.FILES['foto']
+    
+                if not id_equipamento:
+                    equipamento.quantidade_disponivel = equipamento.quantidade_total
+    
+                if id_equipamento:
+                    equipamento.quantidade_total = qtd_total_banco
+    
+                equipamento.save()
+    
+                if id_equipamento:
+                    msg = "Alterações efetuadas com sucesso!"
+                else:
+                    msg = "Equipamento cadastrado com sucesso!"
                 cor_msg = "green"
+                form = EquipamentoForm()
+            else:
+                print(form.errors)
+                msg = "Formulário inválido! Tente novamente"
+                cor_msg = "red"
+            return render(request, self.template, {'form': form, 'id': id_equipamento, 'msg': msg, 'cor_msg': cor_msg})
+        else:
+            msg = "Sem permissões de acesso!"
+            cor_msg = 'yellow'
+            return Painel(request, msg, cor_msg)
+
+    @classmethod
+    @method_decorator(login_required)
+    def ExcluirEquipamento(self, request, id_equipamento=None):
+        if request.user.is_superuser:
+            if id_equipamento:
+                equipamento = EquipamentoModel.objects.get(pk=id_equipamento)
+                if equipamento:
+                    equipamento = EquipamentoModel.objects.get(id=id_equipamento)
+                    equipamento.foto.delete()
+                    equipamento.delete()
+                    msg = "Equipamento excluído com sucesso."
+                    cor_msg = "green"
+                else:
+                    msg = "Não foi possível encontrar o equipamento."
+                    cor_msg = 'red'
             else:
                 msg = "Não foi possível encontrar o equipamento."
                 cor_msg = 'red'
         else:
-            msg = "Não foi possível encontrar o equipamento."
-            cor_msg = 'red'
+            msg = "Sem permissões de acesso!"
+            cor_msg = 'yellow'
         return Painel(request, msg, cor_msg)
 
     @classmethod
+    @method_decorator(login_required)
     def VisualizarEquipamento(self, request, id_equipamento=None, msg=None, cor_msg=None):
         context_dict = {}
         try:
@@ -93,52 +112,71 @@ class EquipamentoView(View):
         context_dict['comentarios'] = comentarios
         context_dict['equipamento'] = equipamento
         context_dict['utilizacoes'] = utilizacoes
+        context_dict['usuarios'] = User.objects.all()
+        context_dict['msg'] = msg
+        context_dict['cor_msg'] = cor_msg
         return render(request, 'visualizar_equipamento.html', context_dict)
 
     @classmethod
+    @method_decorator(login_required)
     def AtivarDesativarEquipamento(self, request, id_equipamento=None):
-        if id_equipamento:
-            equipamento = EquipamentoModel.objects.get(pk=id_equipamento)
-            if equipamento:
-                if equipamento.ativo:
-                    equipamento.ativo = False
-                    equipamento.save()
-                    msg = "Equipamento desativado com sucesso."
-                    cor_msg = 'green'
-                    return EquipamentoView.VisualizarEquipamento(request, equipamento.id, msg, cor_msg)
-                else:
-                    equipamento.ativo = True
-                    equipamento.save()
-                    msg = "Equipamento ativado com sucesso."
-                    cor_msg = 'green'
-                    return EquipamentoView.VisualizarEquipamento(request, equipamento.id, msg, cor_msg)
-        msg = "Não foi possível encontrar o equipamento."
-        cor_msg = 'red'
+        if request.user.is_superuser:
+            if id_equipamento:
+                equipamento = EquipamentoModel.objects.get(pk=id_equipamento)
+                if equipamento:
+                    if equipamento.ativo:
+                        equipamento.ativo = False
+                        equipamento.save()
+                        msg = "Equipamento desativado com sucesso."
+                        cor_msg = 'green'
+                        return EquipamentoView.VisualizarEquipamento(request, equipamento.id, msg, cor_msg)
+                    else:
+                        equipamento.ativo = True
+                        equipamento.save()
+                        msg = "Equipamento ativado com sucesso."
+                        cor_msg = 'green'
+                        return EquipamentoView.VisualizarEquipamento(request, equipamento.id, msg, cor_msg)
+            msg = "Não foi possível encontrar o equipamento."
+            cor_msg = 'red'
+        else:
+            msg = "Sem permissões de acesso!"
+            cor_msg = 'yellow'
         return Painel(request, msg, cor_msg)
 
     @classmethod
+    @method_decorator(login_required)
     def AcrescentarUnidade(self, request, id_equipamento=None):
-        equipamento = EquipamentoModel.objects.get(id=id_equipamento)
-        equipamento.quantidade_total = str(int(equipamento.quantidade_total) + 1)
-        equipamento.quantidade_disponivel = str(int(equipamento.quantidade_disponivel) + 1)
-        equipamento.save()
-        return EquipamentoView.VisualizarEquipamento(request, id_equipamento)
-
-    @classmethod
-    def ReduzirUnidade(self, request, id_equipamento=None):
-        context_dict = {}
-        equipamento = EquipamentoModel.objects.get(id=id_equipamento)
-        if int(equipamento.quantidade_disponivel) > 0 and int(equipamento.quantidade_total > 0):
-            equipamento.quantidade_total = str(int(equipamento.quantidade_total) - 1)
-            equipamento.quantidade_disponivel = str(int(equipamento.quantidade_disponivel) - 1)
+        if request.user.is_superuser:
+            equipamento = EquipamentoModel.objects.get(id=id_equipamento)
+            equipamento.quantidade_total = str(int(equipamento.quantidade_total) + 1)
+            equipamento.quantidade_disponivel = str(int(equipamento.quantidade_disponivel) + 1)
             equipamento.save()
+            return EquipamentoView.VisualizarEquipamento(request, id_equipamento)
         else:
-            context_dict['msg'] = "Não existem mais unidades."
-            context_dict['cor_msg'] = "red"
-
-        return EquipamentoView.VisualizarEquipamento(request, id_equipamento, context_dict)
+            msg = "Sem permissões de acesso!"
+            cor_msg = 'yellow'
+            return Painel(request, msg, cor_msg)
 
     @classmethod
+    @method_decorator(login_required)
+    def ReduzirUnidade(self, request, id_equipamento=None, msg=None, cor_msg=None):
+        if request.user.is_superuser:
+            equipamento = EquipamentoModel.objects.get(id=id_equipamento)
+            if int(equipamento.quantidade_disponivel) > 0 and int(equipamento.quantidade_total > 0):
+                equipamento.quantidade_total = str(int(equipamento.quantidade_total) - 1)
+                equipamento.quantidade_disponivel = str(int(equipamento.quantidade_disponivel) - 1)
+                equipamento.save()
+            else:
+                msg = "Não existem mais unidades."
+                cor_msg = "red"
+            return EquipamentoView.VisualizarEquipamento(request, id_equipamento, msg, cor_msg)
+        else:
+            msg = "Sem permissões de acesso!"
+            cor_msg = 'yellow'
+            return Painel(request, msg, cor_msg)
+
+    @classmethod
+    @method_decorator(login_required)
     def ListaEquipamentos(self, request, msg=None, cor_msg=None):
         context_dict = {}
         equipamentos = EquipamentoModel.objects.filter(ativo=True)
@@ -154,6 +192,7 @@ class EquipamentoView(View):
         return render(request, 'lista_equipamentos.html', context_dict)
 
     @classmethod
+    @method_decorator(login_required)
     def ListaEquipamentosDesativados(self, request, msg=None, cor_msg=None):
         context_dict = {}
         equipamentos = EquipamentoModel.objects.filter(ativo=False)
@@ -170,6 +209,7 @@ class EquipamentoView(View):
         return render(request, 'lista_equipamentos_desativados.html', context_dict)
 
     @classmethod
+    @method_decorator(login_required)
     def Comentar(self, request, id_equipamento=None):
         usuario = request.user
         equipamento = EquipamentoModel.objects.get(pk=id_equipamento)
@@ -185,42 +225,52 @@ class EquipamentoView(View):
         return EquipamentoView.VisualizarEquipamento(request, id_equipamento)
 
     @classmethod
+    @method_decorator(login_required)
     def Emprestar(self, request, id_equipamento):
-        context_dict = {}
-        equipamento = EquipamentoModel.objects.get(pk=id_equipamento)
-        usuario = request.user
-        qtd_a_emprestar = int(request.POST.get('quantidade'))
-        qtd_disponivel = int(equipamento.quantidade_disponivel)
-        if qtd_a_emprestar <= qtd_disponivel and qtd_a_emprestar > 0:
-            utilizacao = UtilizacaoModel(
-                equipamento=equipamento,
-                usuario=usuario,
-                quantidade_utilizada=qtd_a_emprestar
-            )
+        if request.user.is_superuser:
+            equipamento = EquipamentoModel.objects.get(pk=id_equipamento)
+            usuario = User.objects.get(pk=request.POST['usuario'])
+            qtd_a_emprestar = int(request.POST['quantidade'])
+            qtd_disponivel = int(equipamento.quantidade_disponivel)
+            if qtd_disponivel >= qtd_a_emprestar > 0:
+                utilizacao = UtilizacaoModel(
+                    equipamento=equipamento,
+                    usuario=usuario,
+                    quantidade_utilizada=qtd_a_emprestar
+                )
 
-            equipamento.quantidade_disponivel = qtd_disponivel - qtd_a_emprestar
-            equipamento.save()
-            utilizacao.save()
-            msg = "Empréstimo realizado com sucesso."
-            cor_msg = "green"
+                equipamento.quantidade_disponivel = qtd_disponivel - qtd_a_emprestar
+                equipamento.save()
+                utilizacao.save()
+                msg = "Empréstimo realizado com sucesso."
+                cor_msg = "green"
+            else:
+                msg = "Quantidade inválida."
+                cor_msg = "red"
+            return EquipamentoView.VisualizarEquipamento(request, id_equipamento, msg, cor_msg)
         else:
-            msg = "Quantidade inválida."
-            cor_msg = "red"
-
-        context_dict['msg'] = msg
-        context_dict['cor_msg'] = cor_msg
-        return EquipamentoView.VisualizarEquipamento(request, id_equipamento, context_dict)
+            msg = "Sem permissões de acesso!"
+            cor_msg = 'yellow'
+            return Painel(request, msg, cor_msg)
 
     @classmethod
+    @method_decorator(login_required)
     def Devolver(self, request, id_utilizacao):
-        utilizacao = UtilizacaoModel.objects.get(pk=id_utilizacao)
-        id_equipamento = utilizacao.equipamento.id
+        if request.user.is_superuser:
+            utilizacao = UtilizacaoModel.objects.get(pk=id_utilizacao)
+            id_equipamento = utilizacao.equipamento.id
 
-        if request.user == utilizacao.usuario:
             equipamento = utilizacao.equipamento
             equipamento.quantidade_disponivel = str(
                 int(equipamento.quantidade_disponivel) + int(utilizacao.quantidade_utilizada))
             equipamento.save()
             utilizacao.ativo = False
             utilizacao.save()
-        return EquipamentoView.VisualizarEquipamento(request, id_equipamento)
+
+            msg = "Devolvido com sucesso."
+            cor_msg = "green"
+            return EquipamentoView.VisualizarEquipamento(request, id_equipamento, msg, cor_msg)
+        else:
+            msg = "Sem permissões de acesso!"
+            cor_msg = 'yellow'
+            return Painel(request, msg, cor_msg)

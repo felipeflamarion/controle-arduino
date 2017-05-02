@@ -56,7 +56,7 @@
                                     </div>
                                 </div>
 
-                                {% if user.is_superuser %}
+                                {% if request.user.is_superuser %}
                                 <br/>
                                 <a class="ui labeled icon button secondary"
                                    href="{% url 'ativar_desativar_equipamento' equipamento.id %}"><i

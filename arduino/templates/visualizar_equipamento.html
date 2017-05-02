@@ -90,7 +90,7 @@
                             </div>
                         </div>
 
-                        {% if user.is_staff %}
+                        {% if request.user.is_superuser %}
                             <div class="three wide column">
                                 <div class="ui vertical buttons">
                                     {% if equipamento.ativo %}
@@ -141,7 +141,7 @@
                                             <div class="item">
                                                 <div class="header">
                                                     <i class="user icon"></i>
-                                                    Usuário: {{ utilizacao.usuario.username }}
+                                                    Usuário: {{ utilizacao.usuario.first_name }}
                                                 </div>
                                             </div>
                                             <div class="item">
@@ -158,7 +158,7 @@
                                             </div>
                                         </div>
 
-                                        {% if user == utilizacao.usuario and utilizacao.ativo %}
+                                        {% if request.user.is_superuser %}
                                             <a class="ui labeled icon button green"
                                                href="{% url 'devolver' utilizacao.id %}">
                                                 <i class="reply icon"></i> Devolver
@@ -175,32 +175,46 @@
                             </div>
                         {% endif %}
 
-                        {% if equipamento.quantidade_disponivel == '0' or not user.is_superuser %}
-                            <div class="eight wide column">
-                                <div class="ui segment" style="padding: 30px;">
-                                    <span class="ui yellow message"><i>Equipamento indisponível para empréstimo</i></span>
+                        {% if request.user.is_superuser %}
+                            {% if equipamento.quantidade_disponivel == '0' %}
+                                <div class="eight wide column">
+                                    <div class="ui segment" style="padding: 30px;">
+                                        <span class="ui yellow message"><i>Quantidade indisponível para empréstimo</i></span>
+                                    </div>
                                 </div>
-                            </div>
-                        {% else %}
-                            <div class="eight wide column">
-                                <div class="ui segment">
-                                    <h2><i class="shopping basket icon"></i> Emprestar</h2>
+                            {% else %}
+                                <div class="eight wide column">
+                                    <div class="ui segment">
+                                        <h2><i class="shopping basket icon"></i> Emprestar</h2>
 
-                                    <form class="ui form" method="POST"
-                                          action="{% url 'emprestar' equipamento.id %}">
-                                        {% csrf_token %}
+                                        <form class="ui form" method="POST"
+                                              action="{% url 'emprestar' equipamento.id %}">
+                                            {% csrf_token %}
 
-                                        <div class="fields">
-                                            <div class="four wide field">
-                                                <label>Quantidade</label>
-                                                <input class="input" type="text" name="quantidade" value="1"
-                                                       required="required"/>
+                                            <div class="fields">
+                                                <div class="four wide field">
+                                                    <label>Quantidade</label>
+                                                    <input class="input" type="text" name="quantidade" value="1"
+                                                           required="required"/>
+                                                </div>
+                                                <div class="nine wide field">
+                                                    <label>Usuário</label>
+                                                    <select class="ui search dropdown" name="usuario"
+                                                            required="required">
+                                                        <option value="">Selecione um usuário...</option>
+                                                        {% for usuario in usuarios %}
+                                                            {% if not usuario.is_superuser %}
+                                                                <option value="{{ usuario.id }}">{{ usuario.first_name }}</option>
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <input type="submit" class="ui icon button green" value="Emprestar"/>
-                                    </form>
+                                            <input type="submit" class="ui icon button green" value="Emprestar"/>
+                                        </form>
+                                    </div>
                                 </div>
-                            </div>
+                            {% endif %}
                         {% endif %}
                     </div>
                 </div>
