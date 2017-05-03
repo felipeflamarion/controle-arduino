@@ -38,21 +38,21 @@ class EquipamentoView(LoginRequiredMixin, View):
                 form = EquipamentoForm(instance=equipamento_banco, data=request.POST)
             else:  # CADASTRO NOVO
                 form = EquipamentoForm(data=request.POST)
-    
+
             if form.is_valid():
                 equipamento = form.save(commit=False)
-    
+
                 if 'foto' in request.FILES:
                     equipamento.foto = request.FILES['foto']
-    
+
                 if not id_equipamento:
                     equipamento.quantidade_disponivel = equipamento.quantidade_total
-    
+
                 if id_equipamento:
                     equipamento.quantidade_total = qtd_total_banco
-    
+
                 equipamento.save()
-    
+
                 if id_equipamento:
                     msg = "Alterações efetuadas com sucesso!"
                 else:

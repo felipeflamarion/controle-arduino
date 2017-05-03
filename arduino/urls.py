@@ -36,6 +36,8 @@ urlpatterns = [
     url(r'^equipamento/emprestar/(?P<id_equipamento>[\d]+)/$', EquipamentoView.Emprestar, name='emprestar'),
     url(r'^equipamento/devolver/(?P<id_utilizacao>[\d]+)/$', EquipamentoView.Devolver, name='devolver'),
 
+    url(r'^tag/cadastrar/$', TagView.as_view(), name='cadastro_tag'),
+
     # 404
     url(r'', TemplateView.as_view(template_name='404.html'), name='404'),
 ]

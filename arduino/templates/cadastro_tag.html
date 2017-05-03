@@ -1,0 +1,70 @@
+{% extends '__base_painel__.html' %}
+
+{% block title %}
+    {% if not id %}
+        Cadastrar Equipamento
+    {% else %}
+        Editar Equipamento
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <div class="eight wide column">
+
+        {% if msg %}
+            <div class="ui {{ cor_msg }} message">
+                <div class="header">
+                    {{ msg }}
+                </div>
+            </div>
+        {% endif %}
+
+        <h1 class="ui header">
+            <i class="tag icon"></i>
+            <div class="content">
+                Tags
+                <div class="sub header">
+                    Gerenciamento das tags
+                </div>
+            </div>
+        </h1>
+
+        {% if form %}
+            <form method="POST" action="{% url 'cadastro_tag' %}" class="ui form">{% csrf_token %}
+                <div class="field">
+                    <label>{{ form.descricao.label }}</label>
+                    <div class="ui left icon input">
+                        <i class="tag icon"></i>
+                        {{ form.descricao }}
+                    </div>
+                </div>
+
+                <div class="ui two big buttons">
+                    <a href="{% url 'painel' %}" class="ui red button">
+                        Cancelar
+                    </a>
+                    <input type="submit" class="ui green submit button" value="Salvar">
+                </div>
+            </form>
+        {% endif %}
+
+        <h3 class="ui header">
+            <i class="tags icon"></i>
+            <div class="content">
+                Tags cadastradas
+                <div class="sub header">Lista de Tags</div>
+            </div>
+        </h3>
+
+        {% if tags %}
+            {% for tag in tags %}
+                <div class="ui big icon tags-inventario label" style="margin-bottom: 8px;">
+                    <a href=""><i class="remove icon"></i>
+                        {{ tag.descricao }}
+                    </a>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+    </div>
+{% endblock %}
