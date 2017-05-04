@@ -2,9 +2,9 @@
 
 {% block title %}
     {% if not id %}
-        Cadastrar Equipamento
+        Cadastrar Tag
     {% else %}
-        Editar Equipamento
+        Editar Tag
     {% endif %}
 {% endblock %}
 
@@ -15,6 +15,14 @@
             <div class="ui {{ cor_msg }} message">
                 <div class="header">
                     {{ msg }}
+                </div>
+            </div>
+        {% endif %}
+
+        {% if form.descricao.errors %}
+            <div class="ui red message">
+                <div class="header">
+                    {{ form.descricao.errors }}
                 </div>
             </div>
         {% endif %}
@@ -30,7 +38,11 @@
         </h1>
 
         {% if form %}
-            <form method="POST" action="{% url 'cadastro_tag' %}" class="ui form">{% csrf_token %}
+            <form method="POST"
+                  action="{% if id %}{% url 'edita_tag' id %}{% else %}{% url 'cadastro_tag' %}{% endif %}"
+                  class="ui form">{% csrf_token %}
+                <input type="hidden" name="id" value="{% if id %}{{ id }}{% endif %}"/>
+
                 <div class="field">
                     <label>{{ form.descricao.label }}</label>
                     <div class="ui left icon input">
@@ -43,7 +55,8 @@
                     <a href="{% url 'painel' %}" class="ui red button">
                         Cancelar
                     </a>
-                    <input type="submit" class="ui green submit button" value="Salvar">
+                    <input type="submit" class="ui green submit button"
+                           value="{% if id %}Salvar{% else %}Cadastrar{% endif %}">
                 </div>
             </form>
         {% endif %}
@@ -59,9 +72,9 @@
         {% if tags %}
             {% for tag in tags %}
                 <div class="ui big icon tags-inventario label" style="margin-bottom: 8px;">
-                    <a href=""><i class="remove icon"></i>
-                        {{ tag.descricao }}
-                    </a>
+                    <a href="{% url 'exclui_tag' tag.id %}"><i class="remove icon"></i></a>
+                    <a href="{% url 'edita_tag' tag.id %}"><i class="edit icon"></i></a>
+                    {{ tag.descricao }}
                 </div>
             {% endfor %}
         {% endif %}

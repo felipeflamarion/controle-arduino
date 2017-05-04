@@ -77,8 +77,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'arduino_db',
-        'USER': 'arduino',
-        'PASSWORD': 'arduino',
+        'USER': 'wagner',
+        'PASSWORD': 'wagner',
         'HOST': 'localhost',
         'PORT': '',
     }

@@ -55,6 +55,17 @@
                                         <strong>Quantidade Disponível:</strong> {{ equipamento.quantidade_disponivel }}
                                     </div>
                                 </div>
+                                {% if equipamento.tags %}
+                                    <div class="meta">
+                                        <div class="header">
+                                            <i class="sticky note icon"></i>
+                                            <strong>Tags:</strong>
+                                            {% for tag in equipamento.tags %}
+                                                <div class="ui icon tags-inventario label" >{{ tag.descricao }}</div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                {% endif %}
 
                                 {% if request.user.is_superuser %}
                                 <br/>

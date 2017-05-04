@@ -146,6 +146,19 @@
                     {% endif %}
                 </div>
 
+                <div class="field">
+                    <label>Tags</label>
+                    <select class="ui fluid search dropdown" multiple="multiple" name="tags" id="id_tags">
+                        {% for tag in tags %}
+                            {% if tag in tags_selecionadas %}
+                                <option value="{{ tag.id }}" selected="selected">{{ tag.descricao }}</option>
+                            {% else %}
+                                <option value="{{ tag.id }}">{{ tag.descricao }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+
                 <div class="ui three big buttons">
                     <button type="button" onclick="location.href='{% url 'painel' %}'" class="ui button red">
                         Cancelar
