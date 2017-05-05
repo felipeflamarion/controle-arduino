@@ -20,6 +20,7 @@ urlpatterns = [
     url(r'^painel/$', views.Painel, name='painel'),
     url(r'^lista/equipamentos/$', EquipamentoView.ListaEquipamentos, name='lista_equipamentos'),
     url(r'^lista/equipamentos/desativados/$', EquipamentoView.ListaEquipamentosDesativados, name='lista_equipamentos_desativados'),
+    url(r'^lista/meus_emprestimos/$', EquipamentoView.ListaMeusEmprestimos, name='meus_empresitmos'),
 
     url(r'^equipamento/(?P<id>[\d]+)/$', EquipamentoView.VisualizarEquipamento,
         name='visualizar_equipamento'),

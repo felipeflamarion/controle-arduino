@@ -1,4 +1,5 @@
 # coding: utf-8
+import datetime
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -57,6 +58,10 @@ class EquipamentoView(LoginRequiredMixin, View):
                     equipamento.quantidade_total = qtd_total_banco
 
                 equipamento.save()
+                print(type(equipamento.data_registro))
+                equipamento.data_registro = datetime.datetime.now()
+                equipamento.save()
+
                 for tag in TagModel.objects.all():
                     tag = TagModel.objects.get(pk=tag.id)
                     tag.equipamento.remove(equipamento)
@@ -225,6 +230,32 @@ class EquipamentoView(LoginRequiredMixin, View):
         context_dict['msg'] = msg
         context_dict['cor_msg'] = cor_msg
         return render(request, 'lista_equipamentos_desativados.html', context_dict)
+
+    @classmethod
+    @method_decorator(login_required)
+    def ListaMeusEmprestimos(self, request, msg=None, cor_msg=None):
+        context_dict = {}
+        emprestimos = UtilizacaoModel.objects.filter(usuario__exact=request.user, ativo=True)
+
+
+        # equipamentos = []
+        # for emprestimo in emprestimos:
+        #     print(type(emprestimo.equipamento))
+
+        for emprestimo in emprestimos:
+            emprestimo.equipamento.tags = TagModel.objects.filter(equipamento=emprestimo.equipamento.id)
+
+        # PAGINATION
+        equipamentos, page_range, ultima = pagination(emprestimos, request.GET.get('page'))
+        context_dict['dados'] = equipamentos
+        context_dict['page_range'] = page_range
+        context_dict['ultima'] = ultima
+
+        context_dict['dados'] = equipamentos
+        context_dict['msg'] = msg
+        context_dict['cor_msg'] = cor_msg
+        return render(request, 'lista_meus_emprestimos.html', context_dict)
+
 
     @classmethod
     @method_decorator(login_required)

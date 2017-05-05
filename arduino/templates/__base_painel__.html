@@ -47,6 +47,13 @@
                     Equipamentos desativados
                 </a>
 
+                {% if not request.user.is_superuser %}
+                    <a href="{% url 'meus_empresitmos' %}" class="item">
+                        <i class="list icon"></i>
+                        Meus empréstimos
+                    </a>
+                {% endif %}
+
                 <a href="{% url 'cadastro_tag' %}" class="item">
                     <i class="tags icon"></i>
                     Tags
