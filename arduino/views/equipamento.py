@@ -6,6 +6,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.shortcuts import render
 from django.views.generic import View
+
+from arduino.models import CategoriaModel
 from arduino.models import TagModel
 from arduino.views.painel import Painel
 from arduino.forms import EquipamentoForm
@@ -58,7 +60,6 @@ class EquipamentoView(LoginRequiredMixin, View):
                     equipamento.quantidade_total = qtd_total_banco
 
                 equipamento.save()
-                print(type(equipamento.data_registro))
                 equipamento.data_registro = datetime.datetime.now()
                 equipamento.save()
 
@@ -199,15 +200,49 @@ class EquipamentoView(LoginRequiredMixin, View):
     @method_decorator(login_required)
     def ListaEquipamentos(self, request, msg=None, cor_msg=None):
         context_dict = {}
-        equipamentos = EquipamentoModel.objects.filter(ativo=True).order_by('-data_registro')
+        categoria = None
+        filtro = None
+        tag = None
+
+        if request.GET:
+            if 'tag' in request.GET and request.GET['tag'] != "":
+                tag = request.GET['tag']
+                equipamentos = EquipamentoModel.objects.filter(ativo=True, tagmodel__descricao=tag).order_by('-data_registro')
+            else:
+                if 'categoria' in request.GET and request.GET['categoria'] != "":
+                    categoria = request.GET['categoria']
+                    if 'filtro' in request.GET and request.GET['filtro'] != "":
+                        filtro = request.GET['filtro']
+                        equipamentos = EquipamentoModel.objects.filter(descricao__contains=filtro,
+                                                                       ativo=True,
+                                                                       categoria=categoria).order_by('-data_registro')
+                    else:
+                        equipamentos = EquipamentoModel.objects.filter(ativo=True, categoria=categoria).order_by(
+                            '-data_registro')
+                else:
+                    if 'filtro' in request.GET and request.GET['filtro'] != "":
+                        filtro = request.GET['filtro']
+                        equipamentos = EquipamentoModel.objects.filter(descricao__contains=filtro,
+                                                                       ativo=True,).order_by('-data_registro')
+                    else:
+                        equipamentos = EquipamentoModel.objects.filter(ativo=True).order_by(
+                            '-data_registro')
+        else:
+            equipamentos = EquipamentoModel.objects.filter(ativo=True).order_by('-data_registro')
+
         for equipamento in equipamentos:
             equipamento.tags = TagModel.objects.filter(equipamento=equipamento.id)
+
         # PAGINATION
         equipamentos, page_range, ultima = pagination(equipamentos, request.GET.get('page'))
         context_dict['dados'] = equipamentos
         context_dict['page_range'] = page_range
         context_dict['ultima'] = ultima
 
+        context_dict['categorias'] = CategoriaModel.objects.all()
+        context_dict['filtro'] = filtro
+        context_dict['categoria'] = categoria
+        context_dict['tag'] = tag
         context_dict['msg'] = msg
         context_dict['cor_msg'] = cor_msg
         return render(request, 'lista_equipamentos.html', context_dict)
@@ -237,7 +272,6 @@ class EquipamentoView(LoginRequiredMixin, View):
         context_dict = {}
         emprestimos = UtilizacaoModel.objects.filter(usuario__exact=request.user, ativo=True)
 
-
         # equipamentos = []
         # for emprestimo in emprestimos:
         #     print(type(emprestimo.equipamento))
@@ -255,7 +289,6 @@ class EquipamentoView(LoginRequiredMixin, View):
         context_dict['msg'] = msg
         context_dict['cor_msg'] = cor_msg
         return render(request, 'lista_meus_emprestimos.html', context_dict)
-
 
     @classmethod
     @method_decorator(login_required)

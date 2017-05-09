@@ -28,11 +28,15 @@
         {% endif %}
 
         <h1 class="ui header">
-            <i class="tag icon"></i>
+            <i class="tags icon"></i>
             <div class="content">
                 Tags
                 <div class="sub header">
-                    Gerenciamento das tags
+                    {% if request.user.is_superuser %}
+                        Gerenciamento das tags
+                    {% else %}
+                        Lista de Tags
+                    {% endif %}
                 </div>
             </div>
         </h1>
@@ -61,21 +65,33 @@
             </form>
         {% endif %}
 
-        <h3 class="ui header">
-            <i class="tags icon"></i>
-            <div class="content">
-                Tags cadastradas
-                <div class="sub header">Lista de Tags</div>
-            </div>
-        </h3>
+        {% if request.user.is_superuser %}
+            <h3 class="ui header">
+                <i class="tags icon"></i>
+                <div class="content">
+                    Tags cadastradas
+                    <div class="sub header">Lista de Tags</div>
+                </div>
+            </h3>
+        {% endif %}
 
         {% if tags %}
             {% for tag in tags %}
-                <div class="ui big icon tags-inventario label" style="margin-bottom: 8px;">
-                    <a href="{% url 'exclui_tag' tag.id %}"><i class="remove icon"></i></a>
-                    <a href="{% url 'edita_tag' tag.id %}"><i class="edit icon"></i></a>
-                    {{ tag.descricao }}
-                </div>
+                {% if request.user.is_superuser %}
+                    <div class="ui big icon tags-inventario label" style="margin-bottom: 8px;">
+                        <a href="{% url 'exclui_tag' tag.id %}"><i class="remove icon"></i></a>
+                        <a href="{% url 'edita_tag' tag.id %}"><i class="edit icon"></i></a>
+                        <a href="{% url 'lista_equipamentos' %}?tag={{ tag.descricao }}" class="tags-inventario-link">
+                            {{ tag.descricao }}
+                        </a>
+                    </div>
+                {% else %}
+                    <div class="ui big icon tags-inventario label" style="margin-bottom: 8px;">
+                        <a href="{% url 'lista_equipamentos' %}?tag={{ tag.descricao }}" class="tags-inventario-link">
+                            {{ tag.descricao }}
+                        </a>
+                    </div>
+                {% endif %}
             {% endfor %}
         {% endif %}
 

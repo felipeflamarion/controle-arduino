@@ -4,28 +4,34 @@
     <div class="ui centered grid">
         <div class="ui pagination menu">
             {% if dados.has_previous %}
-                <a href="?page={{ 1 }}" class="icon item blue" style="color: #2185d0">Primeira</a>
-                <a href="?page={{ dados.previous_page_number }}" class="icon item"><i class="left arrow icon blue"></i></a>
+                <a href="?page={{ 1 }}{% if filtro %}&filtro={{ filtro }}{% endif %}{% if categoria %}&categoria={{ categoria }}{% endif %}{% if tag %}&tag={{ tag }}{% endif %}"
+                   class="icon item blue" style="color: #2185d0">Primeira</a>
+                <a href="?page={{ dados.previous_page_number }}{% if filtro %}&filtro={{ filtro }}{% endif %}{% if categoria %}&categoria={{ categoria }}{% endif %}{% if tag %}&tag={{ tag }}{% endif %}"
+                   class="icon item"><i class="left arrow icon blue"></i></a>
             {% else %}
-                <a href="#" class="icon item">Primeira</a>
+                <a href="#" class="icon item blue">Primeira</a>
                 <a href="#" class="icon item"><i class="left arrow icon"></i></a>
             {% endif %}
             {% for page in page_range %}
                 {% if dados.number == page %}
-                    <a href="?page={{ page }}" class="icon item">{{ page }}</a>
+                    <a href="?page={{ page }}{% if filtro %}&filtro={{ filtro }}{% endif %}{% if categoria %}&categoria={{ categoria }}{% endif %}{% if tag %}&tag={{ tag }}{% endif %}"
+                       class="icon item">{{ page }}</a>
                 {% else %}
-                    <a href="?page={{ page }}" class="icon item blue" style="color: #2185d0">
+                    <a href="?page={{ page }}{% if filtro %}&filtro={{ filtro }}{% endif %}{% if categoria %}&categoria={{ categoria }}{% endif %}{% if tag %}&tag={{ tag }}{% endif %}"
+                       class="icon item blue" style="color: #2185d0">
                         {{ page }}
                     </a>
                 {% endif %}
             {% endfor %}
 
             {% if dados.has_next %}
-                <a href="?page={{ dados.next_page_number }}" class="icon item"><i class="right arrow icon blue"></i></a>
-                <a href="?page={{ dados.paginator.num_pages }}" class="icon item blue" style="color: #2185d0">Última</a>
+                <a href="?page={{ dados.next_page_number }}{% if filtro %}&filtro={{ filtro }}{% endif %}{% if categoria %}&categoria={{ categoria }}{% endif %}{% if tag %}&tag={{ tag }}{% endif %}"
+                   class="icon item"><i class="right arrow icon blue"></i></a>
+                <a href="?page={{ ultima }}{% if filtro %}&filtro={{ filtro }}{% endif %}{% if categoria %}&categoria={{ categoria }}{% endif %}{% if tag %}&tag={{ tag }}{% endif %}"
+                   class="icon item blue" style="color: #2185d0">Última</a>
             {% else %}
                 <a href="#" class="icon item"><i class="right arrow icon"></i></a>
-                <a href="#" class="icon item">Última</a>
+                <a href="#" class="icon item blue">Última</a>
             {% endif %}
         </div>
     </div>

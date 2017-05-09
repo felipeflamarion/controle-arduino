@@ -37,7 +37,7 @@ urlpatterns = [
     url(r'^equipamento/emprestar/(?P<id>[\d]+)/$', EquipamentoView.Emprestar, name='emprestar'),
     url(r'^equipamento/devolver/(?P<id_utilizacao>[\d]+)/$', EquipamentoView.Devolver, name='devolver'),
 
-    url(r'^tag/cadastrar/$', TagView.as_view(), name='cadastro_tag'),
+    url(r'^tag/$', TagView.as_view(), name='cadastro_tag'),
     url(r'^tag/editar/(?P<id>[\d]+)/$', TagView.as_view(), name='edita_tag'),
     url(r'^tag/excluir/(?P<id>[\d]+)/$', TagView.ExcluirTag, name='exclui_tag'),
 

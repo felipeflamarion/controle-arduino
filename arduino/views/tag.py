@@ -11,11 +11,11 @@ from arduino.views import Painel
 
 class TagView(LoginRequiredMixin, View):
     login_url = '/login/'
-    template = 'cadastro_tag.html'
+    template = 'tags.html'
 
     def get(self, request, id=None, msg=None, cor_msg=None):
+        context_dict = {}
         if request.user.is_superuser:
-            context_dict = {}
             if id:  # EDIÇÃO:
                 tag = TagModel.objects.get(pk=id)
                 form = TagForm(instance=tag)
@@ -26,11 +26,11 @@ class TagView(LoginRequiredMixin, View):
             context_dict['tags'] = TagModel.objects.all().order_by('-id')
             context_dict['msg'] = msg
             context_dict['cor_msg'] = cor_msg
-            return render(request, self.template, context_dict)
         else:
-            msg = "Sem permissões de acesso!"
-            cor_msg = 'yellow'
-            return Painel(request, msg, cor_msg)
+            context_dict['tags'] = TagModel.objects.all().order_by('-id')
+            context_dict['msg'] = msg
+            context_dict['cor_msg'] = cor_msg
+        return render(request, self.template, context_dict)
 
     def post(self, request, id=None, msg=None, cor_msg=None):
         if request.user.is_superuser:
