@@ -272,10 +272,6 @@ class EquipamentoView(LoginRequiredMixin, View):
         context_dict = {}
         emprestimos = UtilizacaoModel.objects.filter(usuario__exact=request.user, ativo=True)
 
-        # equipamentos = []
-        # for emprestimo in emprestimos:
-        #     print(type(emprestimo.equipamento))
-
         for emprestimo in emprestimos:
             emprestimo.equipamento.tags = TagModel.objects.filter(equipamento=emprestimo.equipamento.id)
 

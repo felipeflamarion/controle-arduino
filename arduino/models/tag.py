@@ -15,5 +15,5 @@ class TagModel(models.Model):
 
     class Meta:
         ordering = ['descricao']
-        verbose_name = u"Local"
-        verbose_name_plural = u"Locais"
+        verbose_name = u"Tag"
+        verbose_name_plural = u"Tags"
