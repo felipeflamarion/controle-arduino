@@ -21,7 +21,7 @@
 
         {% if dados %}
             <h1>
-                Meus Empréstimos
+                <i class="ui list icon"></i> Meus Empréstimos
             </h1>
 
             <div class="ui items">
@@ -72,7 +72,10 @@
                                             <i class="sticky note icon"></i>
                                             <strong>Tags:</strong>
                                             {% for tag in emprestimo.equipamento.tags %}
-                                                <div class="ui icon tags-inventario label">{{ tag.descricao }}</div>
+                                                <a href="{% url 'lista_equipamentos' %}?tag={{ tag.descricao }}"
+                                                   class="tags-inventario-link">
+                                                    <div class="ui icon tags-inventario label">{{ tag.descricao }}</div>
+                                                </a>
                                             {% endfor %}
                                         </div>
                                     </div>
