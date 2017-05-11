@@ -1,6 +1,6 @@
 # coding: utf-8
 from django.db import models
-from arduino.models import LocalModel, CategoriaModel
+from arduino.models import CategoriaModel
 
 
 class EquipamentoModel(models.Model):
@@ -9,9 +9,8 @@ class EquipamentoModel(models.Model):
     quantidade_total = models.CharField(max_length=3, default=0)
     quantidade_disponivel = models.CharField(max_length=3, default=0, blank=True)
     ativo = models.BooleanField(default=True)
-    data_registro = models.DateTimeField()
+    data_alteracao = models.DateTimeField()
     foto = models.ImageField(upload_to='equipamentos', blank=True)
-    local = models.ForeignKey(LocalModel, blank=True, null=True)
     categoria = models.ForeignKey(CategoriaModel)
 
     def __unicode__(self):

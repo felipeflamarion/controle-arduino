@@ -66,12 +66,22 @@
                 <input type="hidden" name="id" value="{% if id %}{{ id }}{% endif %}">
 
                 <div class="fields">
-                    <div class="thirteen wide field">
+                    <div class="nine wide field">
                         <label>Descrição</label>
                         {{ form.descricao }}
                         {% if form.descricao.errors %}
                             <div class="ui pointing red basic label">
                                 {{ form.descricao.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="four wide field">
+                        <label>Categoria</label>
+                        {{ form.categoria }}
+                        {% if form.categoria.errors %}
+                            <div class="ui pointing red basic label">
+                                {{ form.categoria.errors }}
                             </div>
                         {% endif %}
                     </div>
@@ -115,24 +125,17 @@
                         {% endif %}
                     </div>
 
-                    <div class="five wide field">
-                        <label>Local</label>
-                        {{ form.local }}
-                        {% if form.local.errors %}
-                            <div class="ui pointing red basic label">
-                                {{ form.local.errors }}
-                            </div>
-                        {% endif %}
-                    </div>
-
-                    <div class="four wide field">
-                        <label>Categoria</label>
-                        {{ form.categoria }}
-                        {% if form.categoria.errors %}
-                            <div class="ui pointing red basic label">
-                                {{ form.categoria.errors }}
-                            </div>
-                        {% endif %}
+                    <div class="nine wide field">
+                        <label>Tags</label>
+                        <select class="ui fluid search dropdown" multiple="multiple" name="tags" id="id_tags">
+                            {% for tag in tags %}
+                                {% if tag in tags_selecionadas %}
+                                    <option value="{{ tag.id }}" selected="selected">{{ tag.descricao }}</option>
+                                {% else %}
+                                    <option value="{{ tag.id }}">{{ tag.descricao }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
                     </div>
                 </div>
 
@@ -144,19 +147,6 @@
                             {{ form.observacao.errors }}
                         </div>
                     {% endif %}
-                </div>
-
-                <div class="field">
-                    <label>Tags</label>
-                    <select class="ui fluid search dropdown" multiple="multiple" name="tags" id="id_tags">
-                        {% for tag in tags %}
-                            {% if tag in tags_selecionadas %}
-                                <option value="{{ tag.id }}" selected="selected">{{ tag.descricao }}</option>
-                            {% else %}
-                                <option value="{{ tag.id }}">{{ tag.descricao }}</option>
-                            {% endif %}
-                        {% endfor %}
-                    </select>
                 </div>
 
                 <div class="ui three big buttons">

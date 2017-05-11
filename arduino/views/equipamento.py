@@ -59,8 +59,7 @@ class EquipamentoView(LoginRequiredMixin, View):
                 if id:
                     equipamento.quantidade_total = qtd_total_banco
 
-                equipamento.save()
-                equipamento.data_registro = datetime.datetime.now()
+                equipamento.data_alteracao = datetime.datetime.now()
                 equipamento.save()
 
                 for tag in TagModel.objects.all():
@@ -207,28 +206,28 @@ class EquipamentoView(LoginRequiredMixin, View):
         if request.GET:
             if 'tag' in request.GET and request.GET['tag'] != "":
                 tag = request.GET['tag']
-                equipamentos = EquipamentoModel.objects.filter(ativo=True, tagmodel__descricao=tag).order_by('-data_registro')
+                equipamentos = EquipamentoModel.objects.filter(ativo=True, tagmodel__descricao=tag).order_by('-data_alteracao')
             else:
                 if 'categoria' in request.GET and request.GET['categoria'] != "":
                     categoria = request.GET['categoria']
                     if 'filtro' in request.GET and request.GET['filtro'] != "":
                         filtro = request.GET['filtro']
-                        equipamentos = EquipamentoModel.objects.filter(descricao__contains=filtro,
+                        equipamentos = EquipamentoModel.objects.filter(descricao__icontains=filtro,
                                                                        ativo=True,
-                                                                       categoria=categoria).order_by('-data_registro')
+                                                                       categoria=categoria).order_by('-data_alteracao')
                     else:
                         equipamentos = EquipamentoModel.objects.filter(ativo=True, categoria=categoria).order_by(
-                            '-data_registro')
+                            '-data_alteracao')
                 else:
                     if 'filtro' in request.GET and request.GET['filtro'] != "":
                         filtro = request.GET['filtro']
-                        equipamentos = EquipamentoModel.objects.filter(descricao__contains=filtro,
-                                                                       ativo=True,).order_by('-data_registro')
+                        equipamentos = EquipamentoModel.objects.filter(descricao__icontains=filtro,
+                                                                       ativo=True,).order_by('-data_alteracao')
                     else:
                         equipamentos = EquipamentoModel.objects.filter(ativo=True).order_by(
-                            '-data_registro')
+                            '-data_alteracao')
         else:
-            equipamentos = EquipamentoModel.objects.filter(ativo=True).order_by('-data_registro')
+            equipamentos = EquipamentoModel.objects.filter(ativo=True).order_by('-data_alteracao')
 
         for equipamento in equipamentos:
             equipamento.tags = TagModel.objects.filter(equipamento=equipamento.id)
@@ -251,7 +250,7 @@ class EquipamentoView(LoginRequiredMixin, View):
     @method_decorator(login_required)
     def ListaEquipamentosDesativados(self, request, msg=None, cor_msg=None):
         context_dict = {}
-        equipamentos = EquipamentoModel.objects.filter(ativo=False).order_by('-data_registro')
+        equipamentos = EquipamentoModel.objects.filter(ativo=False).order_by('-data_alteracao')
         for equipamento in equipamentos:
             equipamento.tags = TagModel.objects.filter(equipamento=equipamento.id)
 

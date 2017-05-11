@@ -39,7 +39,7 @@
                             <div class="content">
                                 {{ equipamento.descricao }}
                                 <div class="sub header">
-                                    Criado em {{ equipamento.data_registro }}
+                                    Modificado em {{ equipamento.data_alteracao }}
                                 </div>
                             </div>
                         </h1>
@@ -67,11 +67,6 @@
                                     <div class="header">
                                         <i class="list icon list-icon"></i> Quantidade
                                         Disponível: {{ equipamento.quantidade_disponivel }}
-                                    </div>
-                                </div>
-                                <div class="item">
-                                    <div class="header">
-                                        <i class="marker icon"></i> Local: {{ equipamento.local.descricao }}
                                     </div>
                                 </div>
                                 <div class="item">
