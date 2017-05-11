@@ -275,15 +275,33 @@ class EquipamentoView(LoginRequiredMixin, View):
             emprestimo.equipamento.tags = TagModel.objects.filter(equipamento=emprestimo.equipamento.id)
 
         # PAGINATION
-        equipamentos, page_range, ultima = pagination(emprestimos, request.GET.get('page'))
-        context_dict['dados'] = equipamentos
+        emprestimos, page_range, ultima = pagination(emprestimos, request.GET.get('page'))
+        context_dict['dados'] = emprestimos
         context_dict['page_range'] = page_range
         context_dict['ultima'] = ultima
 
-        context_dict['dados'] = equipamentos
         context_dict['msg'] = msg
         context_dict['cor_msg'] = cor_msg
         return render(request, 'lista_meus_emprestimos.html', context_dict)
+
+    @classmethod
+    @method_decorator(login_required)
+    def ListaEmprestimos(self, request, msg=None, cor_msg=None):
+        context_dict = {}
+        emprestimos = UtilizacaoModel.objects.filter(ativo=True)
+
+        for emprestimo in emprestimos:
+            emprestimo.equipamento.tags = TagModel.objects.filter(equipamento=emprestimo.equipamento.id)
+
+        # PAGINATION
+        emprestimos, page_range, ultima = pagination(emprestimos, request.GET.get('page'))
+        context_dict['dados'] = emprestimos
+        context_dict['page_range'] = page_range
+        context_dict['ultima'] = ultima
+
+        context_dict['msg'] = msg
+        context_dict['cor_msg'] = cor_msg
+        return render(request, 'lista_emprestimos.html', context_dict)
 
     @classmethod
     @method_decorator(login_required)

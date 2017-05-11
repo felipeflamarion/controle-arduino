@@ -60,8 +60,13 @@
                     Equipamentos desativados
                 </a>
 
+                <a href="{% url 'emprestimos' %}" class="item">
+                    <i class="users icon"></i>
+                    Empréstimos
+                </a>
+
                 {% if not request.user.is_superuser %}
-                    <a href="{% url 'meus_empresitmos' %}" class="item">
+                    <a href="{% url 'meus_emprestimos' %}" class="item">
                         <i class="list icon"></i>
                         Meus empréstimos
                     </a>

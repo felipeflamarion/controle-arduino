@@ -21,7 +21,7 @@
 
         {% if dados %}
             <h1>
-                <i class="ui list icon"></i> Meus Empréstimos
+                <i class="ui list icon"></i> Empréstimos
             </h1>
 
             <div class="ui items">
@@ -64,6 +64,10 @@
                                 <br/>
                                 <span class="font-red">
                                     <i class="list icon"></i> Quantidade emprestada: {{ emprestimo.quantidade_utilizada }}
+                                </span>
+                                <br/>
+                                <span class="font-red">
+                                    <i class="user icon"></i> Usuário: {{ emprestimo.usuario.first_name }}
                                 </span>
 
                                 {% if emprestimo.equipamento.tags %}
