@@ -25,7 +25,7 @@ SECRET_KEY = 'n%jwhp!4&ka)!i_uo)&6sec=z$m(-&$%qnsb25m)f56b@x$l4o'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -77,8 +77,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'arduino_db',
-        'USER': 'wagner',
-        'PASSWORD': 'wagner',
+        'USER': 'arduino',
+        'PASSWORD': 'arduino',
         'HOST': 'localhost',
         'PORT': '',
     }
